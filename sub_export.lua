@@ -72,8 +72,11 @@ function export_selected_subtitles()
             msg.info("Exporting selected subtitles")
             mp.osd_message("Exporting selected subtitles")
 
+            is_windows = package.config:sub(1,1) == "\\"
             cmd = string.format("%s -y -hide_banner -loglevel error -i '%s' -map '%s' -vn -an -c:s copy '%s'", o.ffmpeg_path, video_file, index, subtitles_file)
-            args =  { 'powershell', '-NoProfile', '-Command', cmd }  
+            windows_args = { 'powershell', '-NoProfile', '-Command', cmd }
+            unix_args = { cmd }
+            args =  is_windows and windows_args or unix_args  
 
             mp.add_timeout(mp.get_property_number("osd-duration") * 0.001, process)
 
