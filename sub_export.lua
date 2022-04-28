@@ -1,9 +1,13 @@
---  Usage:
---     Select subtitles and press Shift + X. 
--- 
+-- SOURCE: https://github.com/kelciour/mpv-scripts/blob/master/sub-export.lua
+-- COMMIT: 29 Aug 2018 5039d8b
+--
+-- Usage:
+-- add bindings to input.conf:
+-- X   script-message-to sub_export export-selected-subtitles
+--
 --  Note:
 --     Requires FFmpeg in PATH environment variable or edit ffmpeg_path in the script options,
---     for example, by replacing [[ffmpeg]] with [[C:\Programs\ffmpeg\bin\ffmpeg.exe]]
+--     for example, by replacing "ffmpeg" with "C:\Programs\ffmpeg\bin\ffmpeg.exe"
 --  Note: 
 --     A small circle at the top-right corner is a sign that export is happenning now.
 --  Note:
@@ -11,6 +15,7 @@
 --  Note: 
 --     It could take ~1-5 minutes to export subtitles.
 
+local msg = require 'mp.msg'
 local utils = require 'mp.utils'
 local options = require "mp.options"
 
@@ -40,6 +45,7 @@ function export_selected_subtitles()
 
         if track_type == "sub" and track_selected == "yes" then
             if track_external == "yes" then
+                msg.info("Error: external subtitles have been selected")
                 mp.osd_message("Error: external subtitles have been selected", 2)
                 return
             end
@@ -63,6 +69,7 @@ function export_selected_subtitles()
             
             subtitles_file = dir .. fname .. subtitles_ext
 
+            msg.info("Exporting selected subtitles")
             mp.osd_message("Exporting selected subtitles")
 
             cmd = string.format("%s -y -hide_banner -loglevel error -i '%s' -map '%s' -vn -an -c:s copy '%s'", o.ffmpeg_path, video_file, index, subtitles_file)
@@ -84,11 +91,13 @@ function process()
     local res = mp.command_native({name = "subprocess", capture_stdout = true, playback_only = false, args = args})
     mp.set_osd_ass(screenx, screeny, "")
     if res.status == 0 then
+        msg.info("Finished exporting subtitles")
         mp.osd_message("Finished exporting subtitles")
         mp.commandv("sub-add", subtitles_file)
         mp.set_property("sub-visibility", "yes")
     else
-        mp.osd_message("Failed to export subtitles")
+        msg.info("Failed to export subtitles")
+        mp.osd_message("Failed to export subtitles, check console for more info.")
     end
 end
 
