@@ -12,9 +12,9 @@
 
 修改自 https://gist.github.com/richardpl/0c8011dc23d7ac7b7831b2e6d680114f
 
-## fix-af-out.lua
+## fix-avsync.lua
 
-修复存在音频过滤器时切换音轨导致的视频出现长短不一的冻结卡顿问题
+修复存在音频过滤器时切换音轨和调整播放速度带来的视频冻结卡顿的问题
 
 ## open_dialog.lua
 
@@ -28,8 +28,8 @@
 
 ## ytdl_hook_plus.lua
 
-ytdl 增强脚本，使用该脚本需在 mpv.conf 中写入参数`ytdl=no`
+ytdl_hook.lua 的增强脚本，使用该脚本需在 mpv.conf 中写入参数`ytdl=no`
 
-脚本来自 https://gist.github.com/zhongfly/e95fa433ca912380f9f61e0910146d7e/0f46340621415ae93a91a7f3eb60d013c5bdf542#file-ytdl_hook_plus-lua
+脚本来自 [zhongfly/ytdl_hook_plus.lua](https://gist.github.com/zhongfly/e95fa433ca912380f9f61e0910146d7e/0f46340621415ae93a91a7f3eb60d013c5bdf542#file-ytdl_hook_plus-lua)
 
 ## 更多 mpv 实用脚本请移步 [dyphire/mpv-config/scripts](https://github.com/dyphire/mpv-config/tree/master/scripts)
