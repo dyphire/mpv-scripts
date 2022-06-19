@@ -1,14 +1,13 @@
 --[[
     When switching the audio track, if there is audio filter then repair the freezing of video by frame step-back.
     At the same time, fix the compatibility problem between speed and audio filter.
-    Related issues: https://github.com/mpv-player/mpv/issues/9591
     available at: https://github.com/dyphire/mpv-scripts
 ]]--
 
 local mp = require "mp"
 local msg = require "mp.msg"
 
-function fix_avsync()
+local function fix_avsync()
   local paused = mp.get_property_native("pause")
   msg.info("fix A/V sync.")
   mp.command("no-osd frame-step")
@@ -19,7 +18,7 @@ function fix_avsync()
   end)
 end
 
-function fix_speedout()
+local function fix_speedout()
   local afs = mp.get_property_native("af")
   for _, af in pairs(afs) do
     if af["name"] ~= nil and af["name"] ~= "" then
