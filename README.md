@@ -43,11 +43,22 @@
 ```
 
 ```
-0:17:02.148,Title1
-0:42:19.976,Title2
-0:58:10.114,Title3
+0:00:00.000,Title1
+0:17:02.148,Title2
+0:28:10.114,Title3
 ```
-MediaInfo format (mediainfo)
+ OGM format (`ogm`)
+
+```
+CHAPTER01=00:00:00.000
+CHAPTER01NAME=Intro
+CHAPTER02=00:02:30.000
+CHAPTER02NAME=Baby prepares to rock
+CHAPTER03=00:02:42.300
+CHAPTER03NAME=Baby rocks the house
+```
+MediaInfo format (`mediainfo`)
+
 ```
 Menu
 00:00:00.000                : en:Contours
