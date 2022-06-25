@@ -1,5 +1,9 @@
 # mpv-scipts
 
+## adevice-list.lua
+
+高级 OSD 音频设备菜单，依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
+
 ## copy_subortime.lua
 
 复制当前字幕内容或当前时间（Windows）
