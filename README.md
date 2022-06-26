@@ -2,13 +2,13 @@
 
 ## adevice-list.lua
 
-高级 OSD 音频设备菜单，依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
+OSD 交互式音频设备菜单，依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
 
-## copy_subortime.lua
+## chapter-list.lua
 
-复制当前字幕内容或当前时间（Windows）
+OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
 
-修改自 https://github.com/linguisticmind/mpv-scripts
+修改自 [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 
 ## chapter_make_read.lua
 
@@ -86,11 +86,21 @@ key script-message-to chapter_make_read write_chapter_xml
 
 推荐搭配此工具使用：https://github.com/fireattack/chapter_converter
 
+## copy_subortime.lua
+
+复制当前字幕内容或当前时间（Windows）
+
 ## drcbox.lua
 
 动态调节各通道音增益的 dynnorm 滤镜菜单脚本
 
 修改自 https://gist.github.com/richardpl/0c8011dc23d7ac7b7831b2e6d680114f
+
+## editions-notification-menu.lua
+
+OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition 则在 OSD 上提示。依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
+
+修改自 [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
 
 ## fix-avsync.lua
 
@@ -105,6 +115,10 @@ key script-message-to chapter_make_read write_chapter_xml
 导出当前内封字幕，依赖 ffmpeg，脚本支持 srt、ass 和 sup 格式的字幕
 
 修改自 [kelciour/mpv-scripts/sub-export.lua](https://github.com/kelciour/mpv-scripts/blob/master/sub-export.lua)
+
+## track-menu.lua
+
+OSD 交互式轨道菜单，依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
 
 ## ytdl_hook_plus.lua
 
