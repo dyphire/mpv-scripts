@@ -5,8 +5,8 @@
     Shows a notification when the file loads if it has multiple editions
     switches the osd-playing-message to show the list of editions to allow for better edition navigation
 
-    This script also implements an interractive track list, usage:
-    -- add bindings to input.conf:
+    This script also implements an interractive track list
+    Usage: add bindings to input.conf
     -- key script-message-to editions_notification_menu toggle-edition-browser
 
     This script needs to be used with scroll-list.lua
@@ -18,9 +18,20 @@ local mp = require 'mp'
 local opts = require("mp.options")
 
 local o = {
+    -- set the delay for displaying OSD information in seconds
     timeout = 3,
+    -- header of the list
+    -- %cursor% and %total% to be used to display the cursor position and the total number of lists
     header = "Edition List [%cursor%/%total%]\\N ------------------------------------",
+    -- wrap the cursor around the top and bottom of the list
     wrap = true,
+    -- reset cursor navigation when open the list
+    reset_cursor_on_close = true,
+    -- set dynamic keybinds to bind when the list is open
+    key_move_begin = "HOME",
+    key_move_end = "END",
+    key_move_pageup = "PGUP",
+    key_move_pagedown = "PGDWN",
     key_scroll_down = "DOWN WHEEL_DOWN",
     key_scroll_up = "UP WHEEL_UP",
     key_select_edition = "ENTER MBTN_LEFT",
@@ -88,14 +99,18 @@ function changedFile()
 end
 
 --modifying the list settings
+local original_open = list.open
 list.header = o.header
 list.wrap = o.wrap
 
---jump to the selected edition
-local function select_edition()
-    if list.list[list.selected] then
-        mp.set_property_number('edition', list.selected - 1)
-    end
+--escape header specifies the format
+--display the cursor position and the total number of lists in the header
+function list:format_header_string(string)
+    if #list.list > 0 then
+        string = string:gsub("%%cursor%%", list.selected)
+		:gsub("%%total%%", #list.list)
+    else string = string:gsub("%[.*%]", "") end
+    return string
 end
 
 --update the list when the current edition changes
@@ -116,6 +131,28 @@ mp.observe_property('current-edition', 'number', function(_, curr_edition)
     list:update()
 end)
 
+--jump to the selected edition
+local function select_edition()
+    if list.list[list.selected] then
+        mp.set_property_number('edition', list.selected - 1)
+    end
+end
+
+--reset cursor navigation when open the list
+local function reset_cursor()
+    if o.reset_cursor_on_close then
+        if mp.get_property('editions') then
+            list.selected = mp.get_property_number('current-edition') + 1
+            list:update()
+        end
+    end
+end
+
+function list:open()
+    reset_cursor()
+    original_open(self)
+end
+
 --dynamic keybinds to bind when the list is open
 list.keybinds = {}
 
@@ -129,6 +166,10 @@ end
 
 add_keys(o.key_scroll_down, 'scroll_down', function() list:scroll_down() end, {repeatable = true})
 add_keys(o.key_scroll_up, 'scroll_up', function() list:scroll_up() end, {repeatable = true})
+add_keys(o.key_move_pageup, 'move_pageup', function() list:move_pageup() end, {})
+add_keys(o.key_move_pagedown, 'move_pagedown', function() list:move_pagedown() end, {})
+add_keys(o.key_move_begin, 'move_begin', function() list:move_begin() end, {})
+add_keys(o.key_move_end, 'move_end', function() list:move_end() end, {})
 add_keys(o.key_select_edition, 'select_edition', select_edition, {})
 add_keys(o.key_close_browser, 'close_browser', function() list:close() end, {})
 
