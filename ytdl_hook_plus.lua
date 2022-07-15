@@ -406,10 +406,6 @@ local function formats_to_edl(json, formats, use_all_formats)
         end
     end
 
-    if requested_formats then
-		set_http_headers(requested_formats[1].http_headers)
-    end
-
     local duration = as_integer(json["duration"])
     local single_url = nil
     local streams = {}
@@ -538,6 +534,10 @@ local function add_single_video(json)
     local max_bitrate = 0
     local requested_formats = json["requested_formats"]
     local all_formats = json["formats"]
+    local has_requested_formats = requested_formats and #requested_formats > 0
+    local http_headers = has_requested_formats
+                         and requested_formats[1].http_headers
+                         or json.http_headers
 
     if o.use_manifests and valid_manifest(json) then
         -- prefer manifest_url if present
@@ -567,7 +567,6 @@ local function add_single_video(json)
     if streamurl == ""  then
         -- possibly DASH/split tracks
         local res = nil
-        local has_requested_formats = requested_formats and #requested_formats > 0
 
         -- Not having requested_formats usually hints to HLS master playlist
         -- usage, which we don't want to split off, at least not yet.
@@ -604,13 +603,14 @@ local function add_single_video(json)
         end
         -- normal video or single track
         streamurl = edl_track or json.url
-        set_http_headers(json.http_headers)
     end
 
     if streamurl == "" then
         msg.error("No URL found in JSON data.")
         return
     end
+
+    set_http_headers(http_headers)
 
     msg.verbose("format selection: " .. format_info)
     msg.debug("streamurl: " .. streamurl)
