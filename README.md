@@ -2,11 +2,11 @@
 
 ## adevice-list.lua
 
-OSD 交互式音频设备菜单，依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
+OSD 交互式音频设备菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
 
 ## chapter-list.lua
 
-OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
+OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
 
 修改自 [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 
@@ -98,7 +98,7 @@ key script-message-to chapter_make_read write_chapter_xml
 
 ## editions-notification-menu.lua
 
-OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition 则在 OSD 上提示。依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
+OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition 则在 OSD 上提示。依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
 
 修改自 [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
 
@@ -118,7 +118,7 @@ OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition �
 
 ## track-menu.lua
 
-OSD 交互式轨道菜单，依赖 [scroll-list.lua](https://github.com/dyphire/mpv-scroll-list)
+OSD 交互式轨道菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
 
 ## ytdl_hook_plus.lua
 
