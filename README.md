@@ -12,13 +12,11 @@ OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/CogentRe
 
 ## chapter_make_read.lua
 
-实现自动读取并加载视频文件同目录或指定的子目录（默认：`chapters`）下的同名扩展的外部章节文件，默认标识和扩展名：`_chapter.chp`
+实现自动读取并加载视频文件同目录或指定的子目录（默认：`chapters`）下的同名+标识扩展的外部章节文件，默认标识和扩展名：`_chapter.chp`
 
 - 子目录和标识扩展名的更改可在`script-opts`下的脚本同名配置文件`chapter_make_read.conf`中设置
-
-外部章节文件的时间戳尽可能使用`hh:mm:ss.sss`的12位格式
-
-文件编码应为 UTF-8，换行符为 Unix(LF)
+- 外部章节文件的时间戳尽可能使用`hh:mm:ss.sss`的12位格式
+- 外部章节文件的文件编码应为 UTF-8，换行符为 Unix(LF)
 
 以下几种外部章节文件内容的写法均被该脚本支持
 
