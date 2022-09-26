@@ -118,10 +118,5 @@ OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition �
 
 OSD 交互式轨道菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
 
-## ytdl_hook_plus.lua
-
-ytdl_hook.lua 的增强脚本，使用该脚本需在 mpv.conf 中写入参数`ytdl=no`
-
-脚本修改自 [zhongfly/ytdl_hook_plus.lua](https://gist.github.com/zhongfly/e95fa433ca912380f9f61e0910146d7e/0f46340621415ae93a91a7f3eb60d013c5bdf542#file-ytdl_hook_plus-lua)
 
 ## 更多 mpv 实用脚本请移步 [dyphire/mpv-config/scripts](https://github.com/dyphire/mpv-config/tree/master/scripts)
