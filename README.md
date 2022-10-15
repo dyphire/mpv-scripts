@@ -1,24 +1,26 @@
-# mpv-scipts
+# mpv-scipts([中文介绍](README_zh.md))
 
 ## adevice-list.lua
 
-OSD 交互式音频设备菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
+Interractive audio-device list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
 
 ## chapter-list.lua
 
-OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
+Interractive chapter-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
 
-修改自 [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
+Source: [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 
-## chapter_make_read.lua
+## chapter-make-read.lua
 
-实现自动读取并加载视频文件同目录或指定的子目录（默认：`chapters`）下的同名+标识扩展的外部章节文件，默认标识和扩展名：`_chapter.chp`
+Automatically read an load the namesake external chapter file with extension of `_chapter.chp`. 
 
-- 子目录和标识扩展名的更改可在`script-opts`下的脚本同名配置文件`chapter_make_read.conf`中设置
-- 外部章节文件的时间戳尽可能使用`hh:mm:ss.sss`的12位格式
-- 外部章节文件的文件编码应为 UTF-8，换行符为 Unix(LF)
+Example: `video_chapter.chp` to `video.mp4`.
 
-以下几种外部章节文件内容的写法均被该脚本支持
+- You could change all parameters of script by editing your `script-opts/chapter_make_read.conf`. see [chapter-make-read.lua](chapter-make-read.lua) for details.
+- Timestamps for external chapter files should use the 12-bit format of `hh:mm:ss.sss`.
+- The external chapter files encoding should be UTF-8 and the linebreak should be Unix(LF).
+
+The script supports external chapter file content in the following formats:
 
 ```
 00:00:00.000 A part
@@ -69,54 +71,79 @@ Menu
 00:12:18.041                : en:Faceless
 ```
 
-该脚本同时支持标记并创建外部章节文件（也可用于导出已有的章节信息），用法如下：
+This script also supports marks and creates external chapter files(It can also be used to export the existing chapter information of the playing file). Usage：
 
-在 mpv 的 input.conf 中绑定以下功能键位
+Customize the following keybinds in your `input.conf`.
 
 ```ini
-# 标记章节时间
+# Mark chapters
 key script-message-to chapter_make_read create_chapter
-# 创建 mpv 可读的外部章节文件
+# Export chp file
 key script-message-to chapter_make_read write_chapter
-# 创建 xml 格式的外部章节文件
+# Export xml file
 key script-message-to chapter_make_read write_chapter_xml
 ```
 
-推荐搭配此工具使用：https://github.com/fireattack/chapter_converter
+Recommended for use with this tool：https://github.com/fireattack/chapter_converter
+
+
+## [chapterskip.lua](https://github.com/dyphire/chapterskip/blob/dev/chapterskip.lua)
+
+Automatically skips chapters based on title.
+
+Modified from [po5/chapterskip](https://github.com/po5/chapterskip/blob/master/chapterskip.lua)
 
 ## copy_subortime.lua
 
-复制当前字幕内容或当前时间（Windows）
+Copies the current subtitle content or the current time of the playing file（Windows）
+
+Modified from [linguisticmind/mpv-scripts](https://github.com/linguisticmind/mpv-scripts)
 
 ## drcbox.lua
 
-动态调节各通道音增益的 dynnorm 滤镜菜单脚本
+Dynamic Audio Normalizer filter with visual feedback.
 
-修改自 https://gist.github.com/richardpl/0c8011dc23d7ac7b7831b2e6d680114f
+Modified from https://gist.github.com/richardpl/0c8011dc23d7ac7b7831b2e6d680114f
 
-## editions-notification-menu.lua
+## edition-list.lua
 
-OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition 则在 OSD 上提示。依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
+Interractive edition-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
+- Prints a message on the OSD if editions are found in the file, and temporarily switches the osd-playing-message to the editions-list property when switching. This makes it easier to tell the number and names while navigating editions.
 
-修改自 [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
+Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
 
 ## fix-avsync.lua
 
-修复存在音频过滤器时切换音轨和调整播放速度带来的视频冻结卡顿的问题
+Fixed video freezing caused by switching audio tracks when using audio filters.
+
+Ref: [MPV video stutters when certain audio filter enabled · Issue #9591 · mpv-player/mpv ](https://github.com/mpv-player/mpv/issues/9591)
+
+## [history-bookmark.lua](https://github.com/dyphire/yuukidach-mpv-scripts/blob/master/history-bookmark.lua)
+
+This script helps you to create a history file `.mpv.history` in the specified path. The next time you want to continue to watch it, you can open any videos in the folder. The script will lead you to the video played last time.
+
+Modified from [yuukidach/history-bookmark.lua](https://github.com/yuukidach/mpv-scripts/blob/master/history-bookmark.lua)
 
 ## open_dialog.lua
 
-快捷键载入文件/网址/其他字幕或音轨/高级次字幕
+Load file/url/other subtitles/other audio tracks/advanced subtitle filter.
+
+Modified from [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog)
 
 ## sub_export.lua
 
-导出当前内封字幕，依赖 ffmpeg，脚本支持 srt、ass 和 sup 格式的字幕
+Export the internal subtitles of the playing file. Requires that FFmpeg be installed.
 
-修改自 [kelciour/mpv-scripts/sub-export.lua](https://github.com/kelciour/mpv-scripts/blob/master/sub-export.lua)
+The script support subtitles in srt, ass, and sup formats.
 
-## track-menu.lua
+Modified from [kelciour/mpv-scripts/sub-export.lua](https://github.com/kelciour/mpv-scripts/blob/master/sub-export.lua)
 
-OSD 交互式轨道菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
+## track-list.lua
 
+Interractive track-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
 
-## 更多 mpv 实用脚本请移步 [dyphire/mpv-config/scripts](https://github.com/dyphire/mpv-config/tree/master/scripts)
+## [uosc.lua](https://github.com/dyphire/uosc)
+
+Feature-rich minimalist proximity-based UI for [MPV player](https://mpv.io/).
+
+Modified from [tomasklaen/uosc](https://github.com/tomasklaen/uosc)
