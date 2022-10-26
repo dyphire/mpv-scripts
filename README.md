@@ -130,6 +130,12 @@ Load file/url/other subtitles/other audio tracks/advanced subtitle filter.
 
 Modified from [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog)
 
+## [playlistmanager.lua](https://github.com/dyphire/mpv-playlistmanager)
+
+Mpv lua script to create and manage playlists
+
+Modified from [jonniek/mpv-playlistmanager](https://github.com/jonniek/mpv-playlistmanager)
+
 ## sub_export.lua
 
 Export the internal subtitles of the playing file. Requires that FFmpeg be installed.
