@@ -1,5 +1,5 @@
 --[[
-    * track-list.lua v.2022-10-27
+    * track-list.lua v.2022-11-5
     *
     * AUTHORS: dyphire
     * License: MIT
@@ -56,15 +56,25 @@ function list:format_header_string(str)
     return str
 end
 
+local function is_empty(input)
+    if input == nil or input == "" then
+        return true
+    end
+end
+
+----- string
+local function replace(str, what, with)
+    if is_empty(str) then return "" end
+    if is_empty(what) then return str end
+    if with == nil then with = "" end
+    what = string.gsub(what, "[%(%)%.%+%-%*%?%[%]%^%$%%]", "%%%1")
+    with = string.gsub(with, "[%%]", "%%%%")
+    return string.gsub(str, what, with)
+end
+
 local function esc_for_title(string)
-    string = string:gsub('^%-', '')
-        :gsub('^%_', '')
-        :gsub('^%.', '')
-        :gsub('^.*%].', '')
-        :gsub('^.*%).', '')
-        :gsub('%.%w+$', '')
-        :gsub('^.*%s', '')
-        :gsub('^.*%.', '')
+    string = string:gsub('^[%._%-%s]*', '')
+            :gsub('%.%w+$', '')
     return string
 end
 
@@ -129,7 +139,7 @@ local function getVideoTrackTitle(trackId)
     local trackExternal = propNative("track-list/" .. trackId .. "/external")
     local filename = propNative("filename/no-ext")
 
-    if trackTitle then trackTitle = trackTitle:gsub(filename, '') end
+    if trackTitle then trackTitle = replace(trackTitle, filename, "") end
     if trackExternal then trackTitle = esc_for_title(trackTitle) end
     if trackCodec:match("MPEG2") then trackCodec = "MPEG2"
     elseif trackCodec:match("DVVIDEO") then trackCodec = "DV"
@@ -161,7 +171,7 @@ local function getAudioTrackTitle(trackId)
     local trackExternal = propNative("track-list/" .. trackId .. "/external")
     local filename = propNative("filename/no-ext")
 
-    if trackTitle then trackTitle = trackTitle:gsub(filename, '') end
+    if trackTitle then trackTitle = replace(trackTitle, filename, "") end
     if trackExternal then trackTitle = esc_for_title(trackTitle) end
     if trackCodec:match("PCM") then trackCodec = "PCM" end
 
@@ -191,7 +201,7 @@ local function getSubTrackTitle(trackId)
     local trackExternal = propNative("track-list/" .. trackId .. "/external")
     local filename = propNative("filename/no-ext")
 
-    if trackTitle then trackTitle = trackTitle:gsub(filename, '') end
+    if trackTitle then trackTitle = replace(trackTitle, filename, "") end
     if trackExternal then trackTitle = esc_for_title(trackTitle) end
     if trackCodec:match("PGS") then trackCodec = "PGS"
     elseif trackCodec:match("SUBRIP") then trackCodec = "SRT"
