@@ -1,5 +1,5 @@
 --[[
-  * chapter-make-read.lua v.2022-10-27
+  * chapter-make-read.lua v.2022-11-5
   *
   * AUTHORS: dyphire
   * License: MIT
@@ -90,12 +90,13 @@ local function mark_chapter()
     local chapters_title = {}
     local path = mp.get_property("path")
     local dir, filename = utils.split_path(path)
-    local fpath = dir:gsub("\\", "/")
     local fname = mp.get_property("filename/no-ext")
     local chapter_fliename = fname .. o.chapter_flie_ext
-    chapter_fullpath = fpath .. o.external_chapter_subpath .. "/" .. chapter_fliename
+    local fpath = dir
+    if o.external_chapter_subpath ~= '' then fpath = dir .. o.external_chapter_subpath end
+    chapter_fullpath = utils.join_path(fpath, chapter_fliename)
     if io.open(chapter_fullpath, "r") == nil then
-        chapter_fullpath = fpath .. chapter_fliename
+        chapter_fullpath = dir .. chapter_fliename
     end
     list_contents = read_chapter_table()
 
