@@ -146,8 +146,8 @@ local function getVideoTrackTitle(trackId)
     end
 
     if trackTitle and not trackImage then trackTitle = trackTitle ..
-        "[" .. trackCodec .. "]" .. ", " .. trackwh .. ", " .. trackFps .. " FPS"
-    elseif trackTitle then trackTitle = trackTitle .. "[" .. trackCodec .. "]" .. ", " .. trackwh
+        ", [" .. trackCodec .. "]" .. ", " .. trackwh .. ", " .. trackFps .. " FPS"
+    elseif trackTitle then trackTitle = trackTitle .. ", [" .. trackCodec .. "]" .. ", " .. trackwh
     elseif trackImage then trackTitle = "[" .. trackCodec .. "]" .. ", " .. trackwh
     elseif trackFps then trackTitle = "[" .. trackCodec .. "]" .. ", " .. trackwh .. ", " .. trackFps .. " FPS"
     end
@@ -176,11 +176,11 @@ local function getAudioTrackTitle(trackId)
     if trackCodec:match("PCM") then trackCodec = "PCM" end
 
     if trackTitle and trackLang then trackTitle = trackTitle .. ", " .. trackLang ..
-        "[" .. trackCodec .. "]" .. ", " .. trackChannels .. " ch" .. ", " .. trackSamplerate .. " kHz"
+        ", [" .. trackCodec .. "]" .. ", " .. trackChannels .. " ch" .. ", " .. trackSamplerate .. " kHz"
     elseif trackTitle then trackTitle = trackTitle ..
-        "[" .. trackCodec .. "]" .. ", " .. trackChannels .. " ch" .. ", " .. trackSamplerate .. " kHz"
+        ", [" .. trackCodec .. "]" .. ", " .. trackChannels .. " ch" .. ", " .. trackSamplerate .. " kHz"
     elseif trackLang then trackTitle = trackLang ..
-        "[" .. trackCodec .. "]" .. ", " .. trackChannels .. " ch" .. ", " .. trackSamplerate .. " kHz"
+        ", [" .. trackCodec .. "]" .. ", " .. trackChannels .. " ch" .. ", " .. trackSamplerate .. " kHz"
     elseif trackChannels then trackTitle = 
         "[" .. trackCodec .. "]" .. ", " .. trackChannels .. " ch" .. ", " .. trackSamplerate .. " kHz"
     end
@@ -210,9 +210,9 @@ local function getSubTrackTitle(trackId)
     elseif trackCodec:match("DVD_SUB") then trackCodec = "VOB"
     end
 
-    if trackTitle and trackLang then trackTitle = trackTitle .. ", " .. trackLang .. "[" .. trackCodec .. "]"
-    elseif trackTitle then trackTitle = trackTitle .. "[" .. trackCodec .. "]"
-    elseif trackLang then trackTitle = trackLang .. "[" .. trackCodec .. "]"
+    if trackTitle and trackLang then trackTitle = trackTitle .. ", " .. trackLang .. ", [" .. trackCodec .. "]"
+    elseif trackTitle then trackTitle = trackTitle .. ", [" .. trackCodec .. "]"
+    elseif trackLang then trackTitle = trackLang .. ", [" .. trackCodec .. "]"
     elseif trackCodec then trackTitle = "[" .. trackCodec .. "]"
     end
 
