@@ -101,7 +101,7 @@ local function append_aid()
     if was_ontop then mp.set_property_native("ontop", true) end
     if (res.status ~= 0) then return end
     for filename in string.gmatch(res.stdout, '[^\n]+') do
-        mp.commandv('audio-add', filename, 'auto')
+        mp.commandv('audio-add', filename, 'cached')
     end
 end
 

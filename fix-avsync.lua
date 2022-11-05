@@ -9,12 +9,18 @@ local msg = require "mp.msg"
 
 local function fix_avsync()
     local paused = mp.get_property_native("pause")
+    local muted = mp.get_property_native("mute")
     msg.info("fix A/V sync.")
-    mp.command("no-osd frame-step")
+    mp.commandv("frame-step")
+    mp.set_property_native("mute", true)
     mp.add_timeout(0.1, function()
-        mp.command("no-osd frame-back-step")
+        mp.commandv("frame-back-step")
         if paused then return
         else mp.set_property_native("pause", false) end
+    end)
+    mp.add_timeout(0.5, function()
+        if muted then return
+        else mp.set_property_native("mute", false) end
     end)
 end
 
