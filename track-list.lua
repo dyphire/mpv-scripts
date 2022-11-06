@@ -1,5 +1,5 @@
 --[[
-    * track-list.lua v.2022-11-5
+    * track-list.lua v.2022-11-6
     *
     * AUTHORS: dyphire
     * License: MIT
@@ -34,6 +34,8 @@ local o = {
     key_scroll_down = "DOWN WHEEL_DOWN",
     key_scroll_up = "UP WHEEL_UP",
     key_select_track = "ENTER MBTN_LEFT",
+    key_reload_track = "R r MBTN_MID",
+    key_remove_track = "DEL BS",
     key_close_browser = "ESC MBTN_RIGHT",
 }
 
@@ -123,6 +125,50 @@ local function selectTrack()
             mp.set_property_native("sid", trackId)
         elseif listDest == "sub2" then
             mp.set_property_native("secondary-sid", trackId)
+        end
+    end
+end
+
+local function reloadTrack()
+    local selected = list.list[list.selected]
+    if selected then
+        if selected.disabled then
+            return
+        end
+
+        local trackId = selected.id
+        if trackId == nil then
+            return
+        end
+
+        if listDest == "video" then
+            mp.commandv("video-reload", trackId)
+        elseif listDest == "audio" then
+            mp.commandv("audio-reload", trackId)
+        elseif listDest == "sub" then
+            mp.commandv("sub-reload", trackId)
+        end
+    end
+end
+
+local function removeTrack()
+    local selected = list.list[list.selected]
+    if selected then
+        if selected.disabled then
+            return
+        end
+
+        local trackId = selected.id
+        if trackId == nil then
+            return
+        end
+
+        if listDest == "video" then
+            mp.commandv("video-remove", trackId)
+        elseif listDest == "audio" then
+            mp.commandv("audio-remove", trackId)
+        elseif listDest == "sub" then
+            mp.commandv("sub-remove", trackId)
         end
     end
 end
@@ -305,6 +351,8 @@ add_keys(o.key_move_pagedown, 'move_pagedown', function() list:move_pagedown() e
 add_keys(o.key_move_begin, 'move_begin', function() list:move_begin() end, {})
 add_keys(o.key_move_end, 'move_end', function() list:move_end() end, {})
 add_keys(o.key_select_track, 'select_track', selectTrack, {})
+add_keys(o.key_reload_track, 'reload_track', reloadTrack, {})
+add_keys(o.key_remove_track, 'remove_track', removeTrack, {})
 add_keys(o.key_close_browser, 'close_browser', function() list:close() end, {})
 
 local function setTrackChangeHandler(property, func)
