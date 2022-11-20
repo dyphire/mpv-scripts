@@ -112,9 +112,17 @@ OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition �
 
 ## open_dialog.lua
 
-快捷键载入文件/网址/其他字幕或音轨/高级次字幕
+快捷键载入文件/网址/其他字幕或音轨/高级次字幕（Windows）
 
 修改自 [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog)
+
+## mediaInfo.lua
+
+使用`MediaInfo`获取媒体信息并将其打印在OSD上
+
+并通过[shared_script_properties](https://mpv.io/manual/master/#command-interface-shared-script-properties)共享了`hdr-format`属性，可用于条件配置文件
+
+Modified from [stax76/misc.lua ](https://github.com/stax76/mpv-scripts/blob/main/misc.lua)
 
 ## sub_export.lua
 

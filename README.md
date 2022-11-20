@@ -71,7 +71,7 @@ Menu
 00:12:18.041                : en:Faceless
 ```
 
-This script also supports marks and creates external chapter files(It can also be used to export the existing chapter information of the playing file). Usage：
+This script also supports marks and creates external chapter files(It can also be used to export the existing chapter information of the playback file). Usage：
 
 Customize the following keybinds in your `input.conf`.
 
@@ -95,7 +95,7 @@ Modified from [po5/chapterskip](https://github.com/po5/chapterskip/blob/master/c
 
 ## copy_subortime.lua
 
-Copies the current subtitle content or the current time of the playing file（Windows）
+Copies the current subtitle content or the current time of the playback file. (Windows)
 
 Modified from [linguisticmind/mpv-scripts](https://github.com/linguisticmind/mpv-scripts)
 
@@ -108,7 +108,7 @@ Modified from https://gist.github.com/richardpl/0c8011dc23d7ac7b7831b2e6d680114f
 ## edition-list.lua
 
 Interractive edition-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
-- Prints a message on the OSD if editions are found in the file, and temporarily switches the osd-playing-message to the editions-list property when switching. This makes it easier to tell the number and names while navigating editions.
+- Prints a message on the OSD if editions are found in the file, and temporarily switches the osd-playback-message to the editions-list property when switching. This makes it easier to tell the number and names while navigating editions.
 
 Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
 
@@ -124,9 +124,17 @@ This script helps you to create a history file `.mpv.history` in the specified p
 
 Modified from [yuukidach/history-bookmark.lua](https://github.com/yuukidach/mpv-scripts/blob/master/history-bookmark.lua)
 
+## mediaInfo.lua
+
+Use `MediaInfo` to get media info and print it on OSD.
+
+And shared the `hdr-format` property by [shared_script_properties](https://mpv.io/manual/master/#command-interface-shared-script-properties), available for conditional profiles.
+
+Modified from [stax76/misc.lua ](https://github.com/stax76/mpv-scripts/blob/main/misc.lua)
+
 ## open_dialog.lua
 
-Load file/url/other subtitles/other audio tracks/advanced subtitle filter.
+Load file/url/other subtitles/other audio tracks/advanced subtitle filter. (Windows)
 
 Modified from [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog)
 
@@ -138,7 +146,7 @@ Modified from [jonniek/mpv-playlistmanager](https://github.com/jonniek/mpv-playl
 
 ## sub_export.lua
 
-Export the internal subtitles of the playing file. Requires that FFmpeg be installed.
+Export the internal subtitles of the playback file. Requires that FFmpeg be installed.
 
 The script support subtitles in srt, ass, and sup formats.
 
