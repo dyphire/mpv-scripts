@@ -116,14 +116,14 @@ local function mark_chapter()
         dir = network_chap_dir
         fname = mp.get_property("media-title")
     end
-    local chapter_fliename = fname .. o.chapter_flie_ext
     local fpath = dir
+    local chapter_fliename = fname .. o.chapter_flie_ext
     if o.external_chapter_subpath ~= '' and not is_protocol(path) then
-        fpath = dir .. o.external_chapter_subpath
+        fpath = utils.join_path(dir, o.external_chapter_subpath)
     end
     chapter_fullpath = utils.join_path(fpath, chapter_fliename)
     if io.open(chapter_fullpath, "r") == nil then
-        chapter_fullpath = dir .. chapter_fliename
+        chapter_fullpath = utils.join_path(dir, chapter_fliename)
     end
     list_contents = read_chapter_table()
 
