@@ -1,5 +1,5 @@
 --[[
-  * chapter-make-read.lua v.2022-11-27
+  * chapter-make-read.lua v.2022-12-02
   *
   * AUTHORS: dyphire
   * License: MIT
@@ -46,6 +46,25 @@ local o = {
 
 local function is_protocol(path)
     return type(path) == 'string' and (path:match('^%a[%a%d-_]+://') ~= nil or path:match('^%a[%a%d-_]+:\\?') ~= nil)
+end
+
+function str_decode(str)
+    local function hex_to_char(x)
+        return string.char(tonumber(x, 16))
+    end
+
+    if str ~= nil then
+        str = str:gsub('^%a[%a%d-_]+://', '')
+        str = str:gsub('^%a[%a%d-_]+:\\?', '')
+        str = str:gsub('%%(%x%x)', hex_to_char)
+        if str:match('://localhost:?') then
+            str = str:gsub('^.*/', '')
+        end
+        str = str:gsub('[\\/:%?]*', '')
+        return str
+    else
+        return
+    end
 end
 
 --create network_chap_dir if it doesn't exist
@@ -111,10 +130,10 @@ local function mark_chapter()
     local chapters_title = {}
     local path = mp.get_property("path")
     local dir, filename = utils.split_path(path)
-    local fname = mp.get_property("filename/no-ext")
+    local fname = str_decode(mp.get_property("filename/no-ext"))
     if is_protocol(path) or utils.readdir(dir) == nil then
         dir = network_chap_dir
-        fname = mp.get_property("media-title")
+        fname = str_decode(mp.get_property("media-title"))
     end
     local fpath = dir
     local chapter_fliename = fname .. o.chapter_flie_ext
@@ -222,12 +241,12 @@ local function write_chapter()
 
     local path = mp.get_property("path")
     local dir, name_ext = utils.split_path(path)
-    local name = mp.get_property("filename/no-ext")
+    local name = str_decode(mp.get_property("filename/no-ext"))
     local out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
     local file = io.open(out_path, "w")
     if file == nil then
         dir = network_chap_dir
-        name = mp.get_property("media-title")
+        name = str_decode(mp.get_property("media-title"))
         out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
         file = io.open(out_path, "w")
     end
@@ -274,12 +293,12 @@ local function write_chapter_xml()
 
     local path = mp.get_property("path")
     local dir, name_ext = utils.split_path(path)
-    local name = mp.get_property("filename/no-ext")
+    local name = str_decode(mp.get_property("filename/no-ext"))
     local out_path = utils.join_path(dir, name .. "_chapter.xml")
     local file = io.open(out_path, "w")
     if file == nil then
         dir = network_chap_dir
-        name = mp.get_property("media-title")
+        name = str_decode(mp.get_property("media-title"))
         out_path = utils.join_path(dir, name .. "_chapter.xml")
         file = io.open(out_path, "w")
     end
