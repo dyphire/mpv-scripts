@@ -38,6 +38,8 @@ local o = {
     indent = [[\h\h\h\h]],
     --amount of entries to show before slicing. Optimal value depends on font/video size etc.
     num_entries = 16,
+    --slice long filenames, and how many chars to show
+    slice_longfilenames_amount = 100,
     -- wrap the cursor around the top and bottom of the list
     wrap = true,
     -- set dynamic keybinds to bind when the list is open
@@ -154,6 +156,9 @@ local function getTrackTitle(trackId, dest)
     if trackCodec then trackCodec = esc_for_codec(trackCodec) end
     if trackTitle then trackTitle = replace(trackTitle, filename, "") end
     if trackExternal then trackTitle = esc_for_title(trackTitle) end
+    if trackTitle and trackTitle:len() > o.slice_longfilenames_amount + 5 then
+        trackTitle = trackTitle:sub(1, o.slice_longfilenames_amount) .. " ..."
+    end
 
     if dest == "video" then
         local trackImage = propNative("track-list/" .. trackId .. "/image")

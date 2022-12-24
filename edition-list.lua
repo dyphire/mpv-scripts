@@ -37,6 +37,8 @@ local o = {
     indent = [[\h\h\h\h]],
     --amount of entries to show before slicing. Optimal value depends on font/video size etc.
     num_entries = 16,
+    --slice long filenames, and how many chars to show
+    slice_longfilenames_amount = 100,
     -- wrap the cursor around the top and bottom of the list
     wrap = true,
     -- reset cursor navigation when open the list
@@ -136,22 +138,27 @@ function list:format_header_string(str)
 end
 
 --update the list when the current edition changes
-mp.observe_property('current-edition', 'number', function(_, curr_edition)
+function edition_list(curr_edition)
     list.list = {}
     local edition_list = mp.get_property_native('edition-list', {})
     for i = 1, #edition_list do
         local item = {}
+        local title = edition_list[i].title
+        if not title then title = "Edition " .. string.format("%02.f", i) end
+        if title and title:len() > o.slice_longfilenames_amount + 5 then
+            title = title:sub(1, o.slice_longfilenames_amount) .. " ..."
+        end
         if (i - 1 == curr_edition) then
             list.selected = curr_edition + 1
             item.style = o.active_style
-            item.ass = "● " .. (edition_list[i].title and list.ass_escape(edition_list[i].title) or "Edition " .. string.format("%02.f", i))
+            item.ass = "● " .. list.ass_escape(title)
         else
-            item.ass = "○ " .. (edition_list[i].title and list.ass_escape(edition_list[i].title) or "Edition " .. string.format("%02.f", i))
+            item.ass = "○ " .. list.ass_escape(title)
         end
         list.list[i] = item
     end
     list:update()
-end)
+end
 
 --jump to the selected edition
 local function select_edition()
@@ -197,6 +204,9 @@ add_keys(o.key_close_browser, 'close_browser', function() list:close() end, {})
 
 mp.register_script_message("toggle-edition-browser", function() list:toggle() end)
 
-mp.observe_property('current-edition', nil, editionChanged)
+mp.observe_property('current-edition', 'number', function(_, curr_edition)
+    editionChanged()
+    edition_list(curr_edition)
+end)
 
 mp.register_event('file-loaded', main)

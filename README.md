@@ -8,7 +8,7 @@ Interractive audio-device list menu on OSD. Requires that [scroll-list.lua](http
 
 Interractive chapter-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
 
-Source: [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
+Modified from: [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 
 ## chapter-make-read.lua
 
@@ -86,18 +86,11 @@ key script-message-to chapter_make_read write_chapter_xml
 
 Recommended for use with this tool：https://github.com/fireattack/chapter_converter
 
-
 ## [chapterskip.lua](https://github.com/dyphire/chapterskip/blob/dev/chapterskip.lua)
 
 Automatically skips chapters based on title.
 
 Modified from [po5/chapterskip](https://github.com/po5/chapterskip/blob/master/chapterskip.lua)
-
-## copy_subortime.lua
-
-Copies the current subtitle content or the current time of the playback file. (Windows)
-
-Modified from [linguisticmind/mpv-scripts](https://github.com/linguisticmind/mpv-scripts)
 
 ## drcbox.lua
 

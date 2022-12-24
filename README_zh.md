@@ -8,7 +8,7 @@ OSD 交互式音频设备菜单，依赖 [scroll-list.lua](https://github.com/Co
 
 OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
 
-源自 [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
+修改自 [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 
 ## chapter-make-read.lua
 
@@ -85,12 +85,6 @@ key script-message-to chapter_make_read write_chapter_xml
 ```
 
 推荐搭配此工具使用：https://github.com/fireattack/chapter_converter
-
-## copy_subortime.lua
-
-复制当前字幕内容或当前时间（Windows）
-
-修改自 [linguisticmind/mpv-scripts](https://github.com/linguisticmind/mpv-scripts)
 
 ## drcbox.lua
 

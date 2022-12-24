@@ -28,6 +28,8 @@ local o = {
     indent = [[\h\h\h\h]],
     --amount of entries to show before slicing. Optimal value depends on font/video size etc.
     num_entries = 16,
+    --slice long filenames, and how many chars to show
+    slice_longfilenames_amount = 100,
     -- wrap the cursor around the top and bottom of the list
     wrap = true,
     -- reset cursor navigation when open the list
@@ -72,7 +74,7 @@ function list:format_header_string(str)
 end
 
 --update the list when the current chapter changes
-mp.observe_property('chapter', 'number', function(_, curr_chapter)
+function chapter_list(curr_chapter)
     list.list = {}
     local chapter_list = mp.get_property_native('chapter-list', {})
     for i = 1, #chapter_list do
@@ -84,7 +86,10 @@ mp.observe_property('chapter', 'number', function(_, curr_chapter)
 
         local time = chapter_list[i].time
         local title = chapter_list[i].title
-        if title == "" then title = "Chapter " .. string.format("%02.f", i) end
+        if not title then title = "Chapter " .. string.format("%02.f", i) end
+        if title and title:len() > o.slice_longfilenames_amount + 5 then
+            title = title:sub(1, o.slice_longfilenames_amount) .. " ..."
+        end
         if time < 0 then time = 0
         else time = math.floor(time) end
         item.ass = string.format("[%02d:%02d:%02d]", math.floor(time / 60 / 60), math.floor(time / 60) % 60, time % 60)
@@ -92,7 +97,7 @@ mp.observe_property('chapter', 'number', function(_, curr_chapter)
         list.list[i] = item
     end
     list:update()
-end)
+end
 
 --jump to the selected chapter
 local function open_chapter()
@@ -137,3 +142,7 @@ add_keys(o.key_open_chapter, 'open_chapter', open_chapter, {})
 add_keys(o.key_close_browser, 'close_browser', function() list:close() end, {})
 
 mp.register_script_message("toggle-chapter-browser", function() list:toggle() end)
+
+mp.observe_property('chapter', 'number', function(_, curr_chapter)
+    chapter_list(curr_chapter)
+end)
