@@ -107,7 +107,7 @@ Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://gi
 
 ## fix-avsync.lua
 
-Fixed video freezing caused by switching audio tracks when using audio filters.
+Fixed video freezing caused when switching audio tracks.
 
 Ref: [MPV video stutters when certain audio filter enabled · Issue #9591 · mpv-player/mpv ](https://github.com/mpv-player/mpv/issues/9591)
 

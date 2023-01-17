@@ -100,7 +100,7 @@ OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition �
 
 ## fix-avsync.lua
 
-修复存在音频过滤器时切换音轨和调整播放速度带来的视频冻结卡顿的问题
+修复切换音轨时伴随的视频冻结卡顿的问题
 
 参考：[MPV video stutters when certain audio filter enabled · Issue #9591 · mpv-player/mpv ](https://github.com/mpv-player/mpv/issues/9591)
 
