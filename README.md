@@ -125,6 +125,12 @@ And shared the `hdr-format` property by [shared_script_properties](https://mpv.i
 
 Modified from [stax76/misc.lua ](https://github.com/stax76/mpv-scripts/blob/main/misc.lua)
 
+## mpv-animated.lua
+
+Creates high quality animated webp/gif using mpv hotkeys. Requires that FFmpeg be installed. (Windows)
+
+Modified from [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-webp-generator)
+
 ## open_dialog.lua
 
 Load file/url/other subtitles/other audio tracks/advanced subtitle filter. (Windows)
