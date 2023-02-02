@@ -12,9 +12,9 @@ Modified from: [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github
 
 ## chapter-make-read.lua
 
-Automatically read an load the namesake external chapter file with extension of `_chapter.chp`. 
+Automatically read an load the namesake external chapter file with extension of `.chp`. 
 
-Example: `video_chapter.chp` to `video.mp4`.
+Example: `video.mp4.chp` to `video.mp4`.
 
 - You could change all parameters of script by editing your `script-opts/chapter_make_read.conf`. see [chapter-make-read.lua](chapter-make-read.lua) for details.
 - Timestamps for external chapter files should use the 12-bit format of `hh:mm:ss.sss`.

@@ -1,5 +1,5 @@
 --[[
-  * chapter-make-read.lua v.2022-12-02
+  * chapter-make-read.lua v.2023-02-02
   *
   * AUTHORS: dyphire
   * License: MIT
@@ -33,7 +33,7 @@ local options = require "mp.options"
 local o = {
     read_external_chapter = true,
     -- Specifies the extension of the external chapter file.
-    chapter_flie_ext = "_chapter.chp",
+    chapter_flie_ext = ".chp",
     -- Specifies the subpath of the same directory as the playback file as the external chapter file path.
     -- Note: The external chapter file is read from the subdirectory first.
     -- If the file does not exist, it will next be read from the same directory as the playback file.
@@ -130,7 +130,7 @@ local function mark_chapter()
     local chapters_title = {}
     local path = mp.get_property("path")
     local dir, filename = utils.split_path(path)
-    local fname = str_decode(mp.get_property("filename/no-ext"))
+    local fname = str_decode(mp.get_property("filename"))
     if is_protocol(path) or utils.readdir(dir) == nil then
         dir = network_chap_dir
         fname = str_decode(mp.get_property("media-title"))
@@ -241,7 +241,7 @@ local function write_chapter()
 
     local path = mp.get_property("path")
     local dir, name_ext = utils.split_path(path)
-    local name = str_decode(mp.get_property("filename/no-ext"))
+    local name = str_decode(mp.get_property("filename"))
     local out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
     local file = io.open(out_path, "w")
     if file == nil then
@@ -293,7 +293,7 @@ local function write_chapter_xml()
 
     local path = mp.get_property("path")
     local dir, name_ext = utils.split_path(path)
-    local name = str_decode(mp.get_property("filename/no-ext"))
+    local name = str_decode(mp.get_property("filename"))
     local out_path = utils.join_path(dir, name .. "_chapter.xml")
     local file = io.open(out_path, "w")
     if file == nil then
