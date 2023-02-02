@@ -19,10 +19,12 @@
 00:22:40.146 ED
 --]]
 
--- This script also supports marks and creates external chapter files, usage:
+-- This script also supports marks,edits,remove and creates external chapter files, usage:
 -- Note: It can also be used to export the existing chapter information of the playback file.
 -- add bindings to input.conf:
 -- key script-message-to chapter_make_read create_chapter
+-- key script-message-to chapter_make_read edit_chapter
+-- key script-message-to chapter_make_read remove_chapter
 -- key script-message-to chapter_make_read write_chapter
 -- key script-message-to chapter_make_read write_chapter_xml
 
@@ -31,7 +33,8 @@ local utils = require 'mp.utils'
 local options = require "mp.options"
 
 local o = {
-    read_external_chapter = true,
+    autoload = true,
+    autosave = false,
     -- Specifies the extension of the external chapter file.
     chapter_flie_ext = ".chp",
     -- Specifies the subpath of the same directory as the playback file as the external chapter file path.
@@ -40,9 +43,21 @@ local o = {
     external_chapter_subpath = "chapters",
     -- Specifies the path of the external chapter file for the network playback file.
     network_chap_dir = "~~/chapters",
+    -- ask for title or leave it empty
+    ask_for_title = true,
+    -- placeholder when asking for title of a new chapter
+    placeholder_title = "Chapter ",
+    -- pause the playback when asking for chapter title
+    pause_on_input = false,
 }
 
 (require 'mp.options').read_options(o)
+
+-- Requires: https://github.com/CogentRedTester/mpv-user-input
+package.path = mp.command_native({"expand-path", "~~/script-modules/?.lua;"}) .. package.path
+local user_input_module, input = pcall(require, "user-input-module")
+
+local chapters_modified = false
 
 local function is_protocol(path)
     return type(path) == 'string' and (path:match('^%a[%a%d-_]+://') ~= nil or path:match('^%a[%a%d-_]+:\\?') ~= nil)
@@ -123,7 +138,6 @@ local function read_chapter_table()
 end
 
 local function mark_chapter()
-    if not o.read_external_chapter then return end
     local all_chapters = mp.get_property_native("chapter-list")
     local chapter_index = 0
     local chapters_time = {}
@@ -174,6 +188,25 @@ local function mark_chapter()
     msg.info("load external chapter flie successful: " .. chapter_fliename)
 end
 
+local function change_title_callback(user_input, err, chapter_index)
+    if user_input == nil or err ~= nil then
+        msg.warn("no chapter title provided:", err)
+        return
+    end
+
+    local chapter_list = mp.get_property_native("chapter-list")
+
+    if chapter_index > mp.get_property_number("chapter-list/count") then
+        msg.warn("can't set chapter title")
+        return
+    end
+
+    chapter_list[chapter_index].title = user_input
+
+    mp.set_property_native("chapter-list", chapter_list)
+    chapters_modified = true
+end
+
 local function create_chapter()
     local time_pos = mp.get_property_number("time-pos")
     local time_pos_osd = mp.get_property_osd("time-pos/full")
@@ -184,7 +217,7 @@ local function create_chapter()
 
     if chapter_count == 0 then
         all_chapters[1] = {
-            title = "Chapter 01",
+            title = o.placeholder_title .. "01",
             time = time_pos
         }
         -- We just set it to zero here so when we add 1 later it ends up as 1
@@ -202,12 +235,35 @@ local function create_chapter()
             all_chapters[i + 1] = all_chapters[i]
         end
         all_chapters[curr_chapter + 2] = {
-            title = "Chapter " .. string.format("%02.f", curr_chapter + 2),
+            title = o.placeholder_title .. string.format("%02.f", curr_chapter + 2),
             time = time_pos
         }
     end
     mp.set_property_native("chapter-list", all_chapters)
     mp.set_property_number("chapter", curr_chapter + 1)
+    chapters_modified = true
+    
+    if o.ask_for_title then
+        if not user_input_module then
+            msg.error("no mpv-user-input, can't get user input, install: https://github.com/CogentRedTester/mpv-user-input")
+            return
+        end
+        -- ask user for chapter title
+        local chapter_index = mp.get_property_number("chapter") + 1
+        input.get_user_input(change_title_callback, {
+            request_text = "title of the chapter:",
+            default_input = o.placeholder_title .. string.format("%02.f", chapter_index),
+            cursor_pos = #(o.placeholder_title .. string.format("%02.f", chapter_index)) + 1,
+        }, chapter_index)
+
+        if o.pause_on_input then
+            mp.set_property_bool("pause", true)
+            -- FIXME: for whatever reason osd gets hidden when we pause the
+            -- playback like that, workaround to make input prompt appear
+            -- right away without requiring mouse or keyboard action
+            mp.osd_message(" ", 0.1)
+        end
+    end 
 end
 
 local function format_time(seconds)
@@ -224,7 +280,61 @@ local function format_time(seconds)
     return result
 end
 
-local function write_chapter()
+local function remove_chapter()
+    local chapter_count = mp.get_property_number("chapter-list/count")
+
+    if chapter_count < 1 then
+        msg.verbose("no chapters to remove")
+        return
+    end
+
+    local chapter_list = mp.get_property_native("chapter-list")
+    -- +1 because mpv indexes from 0, lua from 1
+    local current_chapter = mp.get_property_number("chapter") + 1
+
+    table.remove(chapter_list, current_chapter)
+    msg.debug("removing chapter", current_chapter)
+
+    mp.set_property_native("chapter-list", chapter_list)
+    chapters_modified = true
+end
+
+local function edit_chapter()
+    local mpv_chapter_index = mp.get_property_number("chapter")
+    local chapter_list = mp.get_property_native("chapter-list")
+
+    if mpv_chapter_index == nil or mpv_chapter_index == -1 then
+        msg.verbose("no chapter selected, nothing to edit")
+        return
+    end
+
+    if not user_input_module then
+        msg.error("no mpv-user-input, can't get user input, install: https://github.com/CogentRedTester/mpv-user-input")
+        return
+    end
+    -- ask user for chapter title
+    -- (+1 because mpv indexes from 0, lua from 1)
+    input.get_user_input(change_title_callback, {
+        request_text = "title of the chapter:",
+        default_input = chapter_list[mpv_chapter_index + 1].title,
+        cursor_pos = #(chapter_list[mpv_chapter_index + 1].title) + 1,
+    }, mpv_chapter_index + 1)
+
+    if o.pause_on_input then
+        mp.set_property_bool("pause", true)
+        -- FIXME: for whatever reason osd gets hidden when we pause the
+        -- playback like that, workaround to make input prompt appear
+        -- right away without requiring mouse or keyboard action
+        mp.osd_message(" ", 0.1)
+    end
+end
+
+local function write_chapter(force_write)
+    if not force_write and mp.get_property_number("chapter-list/count") == 0 or not chapters_modified then
+        msg.debug("nothing to write")
+        return
+    end
+
     local path = mp.get_property("path")
     local dir, name_ext = utils.split_path(path)
     local name = str_decode(mp.get_property("filename"))
@@ -260,7 +370,11 @@ local function write_chapter()
     end
     file:write(chapters)
     file:close()
-    mp.osd_message("Export chapter file to: " .. out_path, 3)
+    if not force_write then
+        mp.osd_message("Export chapter file to: " .. out_path, 3)
+    else
+        msg.info("Auto save chapter file to: " .. out_path)
+    end
 end
 
 local function write_chapter_xml()
@@ -315,8 +429,22 @@ local function write_chapter_xml()
     mp.osd_message("Export chapter file to: " .. out_path, 3)
 end
 
-mp.add_hook("on_preloaded", 50, mark_chapter)
+-- HOOKS -----------------------------------------------------------------------
+
+if o.autoload then
+    mp.add_hook("on_preloaded", 50, mark_chapter)
+end
+
+if o.autosave then
+    mp.add_hook("on_unload", 50, function() write_chapter(true) end)
+end
+
+if user_input_module then
+    mp.add_hook("on_unload", 50, function() input.cancel_user_input() end)
+end
 
 mp.register_script_message("create_chapter", create_chapter, { repeatable = true })
-mp.register_script_message("write_chapter", write_chapter, { repeatable = false })
-mp.register_script_message("write_chapter_xml", write_chapter_xml, { repeatable = false })
+mp.register_script_message("remove_chapter", remove_chapter)
+mp.register_script_message("edit_chapter", edit_chapter)
+mp.register_script_message("write_chapter", write_chapter)
+mp.register_script_message("write_chapter_xml", write_chapter_xml)

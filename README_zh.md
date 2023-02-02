@@ -71,21 +71,28 @@ Menu
 00:12:18.041                : en:Faceless
 ```
 
-该脚本同时支持标记并创建外部章节文件（也可用于导出已有的章节信息），用法如下：
+该脚本同时支持标记、编辑当前章节标题、删除当前章节和创建外部章节文件（也可用于导出已有的章节信息），用法如下：
 
 在 mpv 的 input.conf 中绑定以下功能键位
 
 ```ini
 # 标记章节时间
 key script-message-to chapter_make_read create_chapter
+# 删除当前章节
+key script-message-to chapter_make_read remove_chapter
+# 编辑当前章节标题
+key script-message-to chapter_make_read edit_chapter
 # 创建 mpv 可读的外部章节文件
 key script-message-to chapter_make_read write_chapter
 # 创建 xml 格式的外部章节文件
 key script-message-to chapter_make_read write_chapter_xml
 ```
+- 如果你想能够命名/重命名章节，你需要安装
+  <https://github.com/CogentRedTester/mpv-user-input>
 
-推荐搭配此工具使用：https://github.com/fireattack/chapter_converter
-
+- 其他推荐
+   -  另一个类似的 mpv 章节脚本: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
+   -  章节格式转换工具：https://github.com/fireattack/chapter_converter
 ## drcbox.lua
 
 动态调节各通道音增益的 dynnorm 滤镜菜单脚本

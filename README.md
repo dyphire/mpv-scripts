@@ -71,20 +71,28 @@ Menu
 00:12:18.041                : en:Faceless
 ```
 
-This script also supports marks and creates external chapter files(It can also be used to export the existing chapter information of the playback file). Usage：
+This script also supports marks,edits,remove and creates external chapter files(It can also be used to export the existing chapter information of the playback file). Usage：
 
 Customize the following keybinds in your `input.conf`.
 
 ```ini
 # Mark chapters
 key script-message-to chapter_make_read create_chapter
+# Remove current chapter
+key script-message-to chapter_make_read remove_chapter
+# Edit existing chapter's title
+key script-message-to chapter_make_read edit_chapter
 # Export chp file
 key script-message-to chapter_make_read write_chapter
 # Export xml file
 key script-message-to chapter_make_read write_chapter_xml
 ```
+- if you want to have the ability to name/rename chapters, you'll need to install
+  <https://github.com/CogentRedTester/mpv-user-input>
 
-Recommended for use with this tool：https://github.com/fireattack/chapter_converter
+- Some recommendations
+   -  another chapters script: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
+   -  chapter format conversion tool：https://github.com/fireattack/chapter_converter
 
 ## [chapterskip.lua](https://github.com/dyphire/chapterskip/blob/dev/chapterskip.lua)
 
