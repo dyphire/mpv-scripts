@@ -225,6 +225,10 @@ local function format_time(seconds)
 end
 
 local function write_chapter()
+    local path = mp.get_property("path")
+    local dir, name_ext = utils.split_path(path)
+    local name = str_decode(mp.get_property("filename"))
+    local out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
     local chapter_count = mp.get_property_number("chapter-list/count")
     local all_chapters = mp.get_property_native("chapter-list")
     local insert_chapters = ""
@@ -234,15 +238,15 @@ local function write_chapter()
         curr = all_chapters[i]
         local time_pos = format_time(curr.time)
         local next_chapter = time_pos .. " " .. curr.title .. "\n"
-        insert_chapters = insert_chapters .. next_chapter
+        if i == 1 then
+            insert_chapters = "# " .. path .. "\n\n" .. next_chapter
+        else
+            insert_chapters = insert_chapters .. next_chapter
+        end
     end
 
     local chapters = insert_chapters
 
-    local path = mp.get_property("path")
-    local dir, name_ext = utils.split_path(path)
-    local name = str_decode(mp.get_property("filename"))
-    local out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
     local file = io.open(out_path, "w")
     if file == nil then
         dir = network_chap_dir
@@ -260,6 +264,10 @@ local function write_chapter()
 end
 
 local function write_chapter_xml()
+    local path = mp.get_property("path")
+    local dir, name_ext = utils.split_path(path)
+    local name = str_decode(mp.get_property("filename"))
+    local out_path = utils.join_path(dir, name .. "_chapter.xml")
     local euid = mp.get_property_number("estimated-frame-count")
     local chapter_count = mp.get_property_number("chapter-list/count")
     local all_chapters = mp.get_property_native("chapter-list")
@@ -290,11 +298,7 @@ local function write_chapter_xml()
 
     local chapters = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<Chapters>\n  <EditionEntry>\n    <EditionFlagHidden>0</EditionFlagHidden>\n    <EditionFlagDefault>0</EditionFlagDefault>\n    <EditionUID>"
         .. euid .. "</EditionUID>\n" .. insert_chapters .. "  </EditionEntry>\n</Chapters>"
-
-    local path = mp.get_property("path")
-    local dir, name_ext = utils.split_path(path)
-    local name = str_decode(mp.get_property("filename"))
-    local out_path = utils.join_path(dir, name .. "_chapter.xml")
+    
     local file = io.open(out_path, "w")
     if file == nil then
         dir = network_chap_dir
