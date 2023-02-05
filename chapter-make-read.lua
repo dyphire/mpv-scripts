@@ -49,7 +49,7 @@ local o = {
     -- placeholder when asking for title of a new chapter
     placeholder_title = "Chapter ",
     -- pause the playback when asking for chapter title
-    pause_on_input = false,
+    pause_on_input = true,
 }
 
 (require 'mp.options').read_options(o)
@@ -58,7 +58,15 @@ local o = {
 package.path = mp.command_native({"expand-path", "~~/script-modules/?.lua;"}) .. package.path
 local user_input_module, input = pcall(require, "user-input-module")
 
+local curr = nil
+local path = nil
+local dir = nil
+local fname = nil
+local all_chapters = {}
+local chapter_count = 0
+local insert_chapters = ""
 local chapters_modified = false
+local paused = false
 
 local function is_protocol(path)
     return type(path) == 'string' and (path:match('^%a[%a%d-_]+://') ~= nil or path:match('^%a[%a%d-_]+:\\?') ~= nil)
@@ -138,14 +146,33 @@ local function read_chapter_table()
     end)
 end
 
+local function refresh_globals()
+    path = mp.get_property("path")
+    dir, name_ext = utils.split_path(path)
+    fname = str_decode(mp.get_property("filename"))
+    all_chapters = mp.get_property_native("chapter-list")
+    chapter_count = mp.get_property_number("chapter-list/count")
+end
+
+local function format_time(seconds)
+    local result = ""
+    if seconds <= 0 then
+        return "00:00:00.000";
+    else
+        hours = string.format("%02.f", math.floor(seconds / 3600))
+        mins = string.format("%02.f", math.floor(seconds / 60 - (hours * 60)))
+        secs = string.format("%02.f", math.floor(seconds - hours * 60 * 60 - mins * 60))
+        msecs = string.format("%03.f", seconds * 1000 - hours * 60 * 60 * 1000 - mins * 60 * 1000 - secs * 1000)
+        result = hours .. ":" .. mins .. ":" .. secs .. "." .. msecs
+    end
+    return result
+end
+
 local function mark_chapter()
-    local all_chapters = mp.get_property_native("chapter-list")
+    refresh_globals()
     local chapter_index = 0
     local chapters_time = {}
     local chapters_title = {}
-    local path = mp.get_property("path")
-    local dir, filename = utils.split_path(path)
-    local fname = str_decode(mp.get_property("filename"))
     if is_protocol(path) or utils.readdir(dir) == nil then
         dir = network_chap_dir
         fname = str_decode(mp.get_property("media-title"))
@@ -191,6 +218,7 @@ end
 
 local function change_title_callback(user_input, err, chapter_index)
     if user_input == nil or err ~= nil then
+        if paused then return elseif o.pause_on_input then mp.set_property_native("pause", false) end
         msg.warn("no chapter title provided:", err)
         return
     end
@@ -205,15 +233,15 @@ local function change_title_callback(user_input, err, chapter_index)
     chapter_list[chapter_index].title = user_input
 
     mp.set_property_native("chapter-list", chapter_list)
+    if paused then return elseif o.pause_on_input then mp.set_property_native("pause", false) end
     chapters_modified = true
 end
 
 local function create_chapter()
+    refresh_globals()
     local time_pos = mp.get_property_number("time-pos")
     local time_pos_osd = mp.get_property_osd("time-pos/full")
     local curr_chapter = mp.get_property_number("chapter")
-    local chapter_count = mp.get_property_number("chapter-list/count")
-    local all_chapters = mp.get_property_native("chapter-list")
     mp.osd_message(time_pos_osd, 1)
 
     if chapter_count == 0 then
@@ -258,6 +286,7 @@ local function create_chapter()
         }, chapter_index)
 
         if o.pause_on_input then
+            paused = mp.get_property_native("pause")
             mp.set_property_bool("pause", true)
             -- FIXME: for whatever reason osd gets hidden when we pause the
             -- playback like that, workaround to make input prompt appear
@@ -265,39 +294,6 @@ local function create_chapter()
             mp.osd_message(" ", 0.1)
         end
     end 
-end
-
-local function format_time(seconds)
-    local result = ""
-    if seconds <= 0 then
-        return "00:00:00.000";
-    else
-        hours = string.format("%02.f", math.floor(seconds / 3600))
-        mins = string.format("%02.f", math.floor(seconds / 60 - (hours * 60)))
-        secs = string.format("%02.f", math.floor(seconds - hours * 60 * 60 - mins * 60))
-        msecs = string.format("%03.f", seconds * 1000 - hours * 60 * 60 * 1000 - mins * 60 * 1000 - secs * 1000)
-        result = hours .. ":" .. mins .. ":" .. secs .. "." .. msecs
-    end
-    return result
-end
-
-local function remove_chapter()
-    local chapter_count = mp.get_property_number("chapter-list/count")
-
-    if chapter_count < 1 then
-        msg.verbose("no chapters to remove")
-        return
-    end
-
-    local chapter_list = mp.get_property_native("chapter-list")
-    -- +1 because mpv indexes from 0, lua from 1
-    local current_chapter = mp.get_property_number("chapter") + 1
-
-    table.remove(chapter_list, current_chapter)
-    msg.debug("removing chapter", current_chapter)
-
-    mp.set_property_native("chapter-list", chapter_list)
-    chapters_modified = true
 end
 
 local function edit_chapter()
@@ -322,6 +318,7 @@ local function edit_chapter()
     }, mpv_chapter_index + 1)
 
     if o.pause_on_input then
+        paused = mp.get_property_native("pause")
         mp.set_property_bool("pause", true)
         -- FIXME: for whatever reason osd gets hidden when we pause the
         -- playback like that, workaround to make input prompt appear
@@ -330,21 +327,33 @@ local function edit_chapter()
     end
 end
 
+local function remove_chapter()
+    local chapter_count = mp.get_property_number("chapter-list/count")
+
+    if chapter_count < 1 then
+        msg.verbose("no chapters to remove")
+        return
+    end
+
+    local chapter_list = mp.get_property_native("chapter-list")
+    -- +1 because mpv indexes from 0, lua from 1
+    local current_chapter = mp.get_property_number("chapter") + 1
+
+    table.remove(chapter_list, current_chapter)
+    msg.debug("removing chapter", current_chapter)
+
+    mp.set_property_native("chapter-list", chapter_list)
+    chapters_modified = true
+end
+
 local function write_chapter(force_write)
     if not force_write and mp.get_property_number("chapter-list/count") == 0 or not chapters_modified then
         msg.debug("nothing to write")
         return
     end
 
-    local path = mp.get_property("path")
-    local dir, name_ext = utils.split_path(path)
-    local name = str_decode(mp.get_property("filename"))
-    local out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
-    local chapter_count = mp.get_property_number("chapter-list/count")
-    local all_chapters = mp.get_property_native("chapter-list")
-    local insert_chapters = ""
-    local curr = nil
-
+    refresh_globals()
+    local out_path = utils.join_path(dir, fname .. o.chapter_flie_ext)
     for i = 1, chapter_count, 1 do
         curr = all_chapters[i]
         local time_pos = format_time(curr.time)
@@ -379,15 +388,8 @@ local function write_chapter(force_write)
 end
 
 local function write_chapter_ogm()
-    local path = mp.get_property("path")
-    local dir, name_ext = utils.split_path(path)
-    local name = str_decode(mp.get_property("filename"))
-    local out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
-    local chapter_count = mp.get_property_number("chapter-list/count")
-    local all_chapters = mp.get_property_native("chapter-list")
-    local insert_chapters = ""
-    local curr = nil
-
+    refresh_globals()
+    local out_path = utils.join_path(dir, fname .. o.chapter_flie_ext)
     for i = 1, chapter_count, 1 do
         curr = all_chapters[i]
         local time_pos = format_time(curr.time)
@@ -419,16 +421,8 @@ local function write_chapter_ogm()
 end
 
 local function write_chapter_xml()
-    local path = mp.get_property("path")
-    local dir, name_ext = utils.split_path(path)
-    local name = str_decode(mp.get_property("filename"))
-    local out_path = utils.join_path(dir, name .. "_chapter.xml")
-    local euid = mp.get_property_number("estimated-frame-count")
-    local chapter_count = mp.get_property_number("chapter-list/count")
-    local all_chapters = mp.get_property_native("chapter-list")
-    local insert_chapters = ""
-    local curr = nil
-
+    refresh_globals()
+    local out_path = utils.join_path(dir, fname .. o.chapter_flie_ext)
     for i = 1, chapter_count, 1 do
         curr = all_chapters[i]
         local time_pos = format_time(curr.time)
