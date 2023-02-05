@@ -6,7 +6,7 @@ Interractive audio-device list menu on OSD. Requires that [scroll-list.lua](http
 
 ## chapter-list.lua
 
-Interractive chapter-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
+Interractive chapter-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list), [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)  be installed.
 
 Modified from: [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 

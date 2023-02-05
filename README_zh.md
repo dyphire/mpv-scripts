@@ -6,7 +6,7 @@ OSD 交互式音频设备菜单，依赖 [scroll-list.lua](https://github.com/Co
 
 ## chapter-list.lua
 
-OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
+OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)，[mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)
 
 修改自 [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 
