@@ -84,6 +84,8 @@ key script-message-to chapter_make_read remove_chapter
 key script-message-to chapter_make_read edit_chapter
 # Export chp file
 key script-message-to chapter_make_read write_chapter
+# Export ogm file
+key script-message-to chapter_make_read write_chapter_ogm
 # Export xml file
 key script-message-to chapter_make_read write_chapter_xml
 ```

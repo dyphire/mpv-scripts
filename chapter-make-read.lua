@@ -1,5 +1,5 @@
 --[[
-  * chapter-make-read.lua v.2023-02-02
+  * chapter-make-read.lua v.2023-02-05
   *
   * AUTHORS: dyphire
   * License: MIT
@@ -26,6 +26,7 @@
 -- key script-message-to chapter_make_read edit_chapter
 -- key script-message-to chapter_make_read remove_chapter
 -- key script-message-to chapter_make_read write_chapter
+-- key script-message-to chapter_make_read write_chapter_ogm
 -- key script-message-to chapter_make_read write_chapter_xml
 
 local msg = require 'mp.msg'
@@ -377,6 +378,46 @@ local function write_chapter(force_write)
     end
 end
 
+local function write_chapter_ogm()
+    local path = mp.get_property("path")
+    local dir, name_ext = utils.split_path(path)
+    local name = str_decode(mp.get_property("filename"))
+    local out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
+    local chapter_count = mp.get_property_number("chapter-list/count")
+    local all_chapters = mp.get_property_native("chapter-list")
+    local insert_chapters = ""
+    local curr = nil
+
+    for i = 1, chapter_count, 1 do
+        curr = all_chapters[i]
+        local time_pos = format_time(curr.time)
+        local next_chapter = "CHAPTER" .. string.format("%02.f", i) .. "=" .. time_pos .. "\n" .. 
+                             "CHAPTER" .. string.format("%02.f", i) .. "NAME=" .. curr.title .. "\n"
+        if i == 1 then
+            insert_chapters = "# " .. path .. "\n\n" .. next_chapter
+        else
+            insert_chapters = insert_chapters .. next_chapter
+        end
+    end
+
+    local chapters = insert_chapters
+
+    local file = io.open(out_path, "w")
+    if file == nil then
+        dir = network_chap_dir
+        name = str_decode(mp.get_property("media-title"))
+        out_path = utils.join_path(dir, name .. o.chapter_flie_ext)
+        file = io.open(out_path, "w")
+    end
+    if file == nil then
+        mp.error("Could not open chapter file for writing.")
+        return
+    end
+    file:write(chapters)
+    file:close()
+    mp.osd_message("Export chapter file to: " .. out_path, 3)
+end
+
 local function write_chapter_xml()
     local path = mp.get_property("path")
     local dir, name_ext = utils.split_path(path)
@@ -447,4 +488,5 @@ mp.register_script_message("create_chapter", create_chapter, { repeatable = true
 mp.register_script_message("remove_chapter", remove_chapter)
 mp.register_script_message("edit_chapter", edit_chapter)
 mp.register_script_message("write_chapter", write_chapter)
+mp.register_script_message("write_chapter_ogm", write_chapter_ogm)
 mp.register_script_message("write_chapter_xml", write_chapter_xml)

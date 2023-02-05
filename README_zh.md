@@ -84,6 +84,8 @@ key script-message-to chapter_make_read remove_chapter
 key script-message-to chapter_make_read edit_chapter
 # 创建 mpv 可读的外部章节文件
 key script-message-to chapter_make_read write_chapter
+# 创建 mpv 可读的 ogm 格式章节文件
+key script-message-to chapter_make_read write_chapter_ogm
 # 创建 xml 格式的外部章节文件
 key script-message-to chapter_make_read write_chapter_xml
 ```
