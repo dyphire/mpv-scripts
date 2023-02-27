@@ -1,4 +1,4 @@
--- mediaInfo.lua v2022.11.20
+-- mediaInfo.lua v2023.02.27
 
 --[[
     Use MediaInfo to get media info and print it on OSD.
@@ -140,6 +140,7 @@ function get_hdr_format()
         output = string.gsub(output, "\n", "; ")
 
         utils.shared_script_property_set("hdr-format", output)
+        mp.set_property_native("user-data/mediainfo/hdr-format", output)
     end
 end
 
