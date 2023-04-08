@@ -122,7 +122,7 @@ end
 
 --create global_chapters_dir if it doesn't exist
 global_chapters_dir = mp.command_native({ "expand-path", o.global_chapters_dir })
-if utils.readdir(global_chapters_dir) == nil then
+if o.global_chapters and utils.readdir(global_chapters_dir) == nil then
     local is_windows = package.config:sub(1, 1) == "\\"
     local windows_args = { 'powershell', '-NoProfile', '-Command', 'mkdir', string.format("\"%s\"", global_chapters_dir) }
     local unix_args = { 'mkdir', '-p', global_chapters_dir }
