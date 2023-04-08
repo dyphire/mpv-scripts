@@ -49,8 +49,8 @@ SOFTWARE.
 -- key script-message-to chapter_make_read create_chapter
 -- key script-message-to chapter_make_read edit_chapter
 -- key script-message-to chapter_make_read remove_chapter
--- key script-message-to chapter_make_read write_chapter
--- key script-message-to chapter_make_read write_chapter_ogm
+-- key script-message-to chapter_make_read write_chapter chp
+-- key script-message-to chapter_make_read write_chapter ogm
 
 local msg = require 'mp.msg'
 local utils = require 'mp.utils'
@@ -517,5 +517,6 @@ mp.register_script_message("load_chapter", function() mark_chapter(true) end)
 mp.register_script_message("create_chapter", create_chapter, { repeatable = true })
 mp.register_script_message("remove_chapter", remove_chapter)
 mp.register_script_message("edit_chapter", edit_chapter)
-mp.register_script_message("write_chapter", function() write_chapter("chp", false) end)
-mp.register_script_message("write_chapter_ogm", function() write_chapter("ogm", false) end)
+mp.register_script_message("write_chapter", function(value, value2)
+    write_chapter(value, value2)
+end)

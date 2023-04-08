@@ -85,9 +85,9 @@ key script-message-to chapter_make_read remove_chapter
 # Edit existing chapter's title
 key script-message-to chapter_make_read edit_chapter
 # Export chp file
-key script-message-to chapter_make_read write_chapter
+key script-message-to chapter_make_read write_chapter chp
 # Export ogm file
-key script-message-to chapter_make_read write_chapter_ogm
+key script-message-to chapter_make_read write_chapter ogm
 ```
 - if you want to have the ability to name/rename chapters, you'll need to install
   <https://github.com/CogentRedTester/mpv-user-input>
