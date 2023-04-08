@@ -71,11 +71,13 @@ Menu
 00:12:18.041                : en:Faceless
 ```
 
-This script also supports marks,edits,remove and creates external chapter files(It can also be used to export the existing chapter information of the playback file). Usage：
+This script also supports manually load/refresh,marks,edits,remove and creates external chapter files(It can also be used to export the existing chapter information of the playback file). Usage：
 
 Customize the following keybinds in your `input.conf`.
 
 ```ini
+# Manually load/refresh chapter file
+key script-message-to chapter_make_read load_chapter
 # Mark chapters
 key script-message-to chapter_make_read create_chapter
 # Remove current chapter

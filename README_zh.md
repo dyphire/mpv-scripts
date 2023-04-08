@@ -71,11 +71,13 @@ Menu
 00:12:18.041                : en:Faceless
 ```
 
-该脚本同时支持标记、编辑当前章节标题、删除当前章节和创建外部章节文件（也可用于导出已有的章节信息），用法如下：
+该脚本同时支持手动加载/刷新外部章节文件、标记新章节、编辑当前章节标题、删除当前章节和创建外部章节文件（也可用于导出已有的章节信息），用法如下：
 
 在 mpv 的 input.conf 中绑定以下功能键位
 
 ```ini
+# 手动加载/刷新外部章节文件
+key script-message-to chapter_make_read load_chapter
 # 标记章节时间
 key script-message-to chapter_make_read create_chapter
 # 删除当前章节

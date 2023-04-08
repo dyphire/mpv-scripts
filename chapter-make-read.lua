@@ -42,9 +42,10 @@ SOFTWARE.
 00:22:40.146 ED
 --]]
 
--- This script also supports marks,edits,remove and creates external chapter files, usage:
+-- This script also supports manually load/refresh,marks,edits,remove and creates external chapter files, usage:
 -- Note: It can also be used to export the existing chapter information of the playback file.
 -- add bindings to input.conf:
+-- key script-message-to chapter_make_read load_chapter
 -- key script-message-to chapter_make_read create_chapter
 -- key script-message-to chapter_make_read edit_chapter
 -- key script-message-to chapter_make_read remove_chapter
@@ -58,6 +59,7 @@ local options = require "mp.options"
 local o = {
     autoload = true,
     autosave = false,
+    force_overwrite = false,
     -- Specifies the extension of the external chapter file.
     chapter_file_ext = ".chp",
     -- Specifies the subpath of the same directory as the playback file as the external chapter file path.
@@ -249,7 +251,7 @@ local function get_chapter_filename(path)
     return name
 end
 
-local function mark_chapter()
+local function mark_chapter(force_overwrite)
     refresh_globals()
     local chapter_index = 0
     local chapters_time = {}
@@ -295,6 +297,7 @@ local function mark_chapter()
 
     table.sort(chapters_time, function(a, b) return a < b end)
 
+    if force_overwrite then all_chapters = {} end
     for i = 1, #chapters_time do
         chapter_index = chapter_index + 1
         all_chapters[chapter_index] = {
@@ -493,7 +496,13 @@ end
 -- HOOKS -----------------------------------------------------------------------
 
 if o.autoload then
-    mp.add_hook("on_preloaded", 50, mark_chapter)
+    mp.add_hook("on_preloaded", 50, function()
+        if o.force_overwrite then
+            mark_chapter(true)
+        else
+            mark_chapter(false)
+        end
+    end)
 end
 
 if o.autosave then
@@ -504,6 +513,7 @@ if user_input_module then
     mp.add_hook("on_unload", 50, function() input.cancel_user_input() end)
 end
 
+mp.register_script_message("load_chapter", function() mark_chapter(true) end)
 mp.register_script_message("create_chapter", create_chapter, { repeatable = true })
 mp.register_script_message("remove_chapter", remove_chapter)
 mp.register_script_message("edit_chapter", edit_chapter)
