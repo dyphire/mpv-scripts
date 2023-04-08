@@ -86,8 +86,6 @@ key script-message-to chapter_make_read edit_chapter
 key script-message-to chapter_make_read write_chapter
 # 创建 mpv 可读的 ogm 格式章节文件
 key script-message-to chapter_make_read write_chapter_ogm
-# 创建 xml 格式的外部章节文件
-key script-message-to chapter_make_read write_chapter_xml
 ```
 - 如果你想能够命名/重命名章节，你需要安装
   <https://github.com/CogentRedTester/mpv-user-input>
