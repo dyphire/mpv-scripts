@@ -1,5 +1,5 @@
 --[[
-  * chapter-make-read.lua v.2023-04-08
+  * chapter-make-read.lua v.2023-04-23
   *
   * AUTHORS: dyphire
   * License: MIT
@@ -49,8 +49,8 @@ SOFTWARE.
 -- key script-message-to chapter_make_read create_chapter
 -- key script-message-to chapter_make_read edit_chapter
 -- key script-message-to chapter_make_read remove_chapter
--- key script-message-to chapter_make_read write_chapter
--- key script-message-to chapter_make_read write_chapter_ogm
+-- key script-message-to chapter_make_read write_chapter chp
+-- key script-message-to chapter_make_read write_chapter ogm
 
 local msg = require 'mp.msg'
 local utils = require 'mp.utils'
@@ -177,7 +177,9 @@ end
 
 local function refresh_globals()
     path = mp.get_property("path")
-    dir, name_ext = utils.split_path(path)
+    if path then
+        dir, name_ext = utils.split_path(path)
+    end
     fname = str_decode(mp.get_property("filename"))
     all_chapters = mp.get_property_native("chapter-list")
     chapter_count = mp.get_property_number("chapter-list/count")
@@ -253,9 +255,12 @@ end
 
 local function mark_chapter(force_overwrite)
     refresh_globals()
+    if not path then return end
+
     local chapter_index = 0
     local chapters_time = {}
     local chapters_title = {}
+    local fpath = dir
     if is_protocol(path) or utils.readdir(dir) == nil then
         fpath = global_chapters_dir
         fname = str_decode(mp.get_property("media-title"))
@@ -268,7 +273,7 @@ local function mark_chapter(force_overwrite)
             fpath = dir
         end
     end
-    if o.global_chapters and not is_protocol(path) and io.open(subpath, "r") == nil then
+    if o.global_chapters and not is_protocol(path) and (subpath and io.open(subpath, "r") == nil) then
         fpath = global_chapters_dir
         if o.hash and o.global_chapters then
             fname = get_chapter_filename(path)
@@ -335,6 +340,8 @@ end
 
 local function create_chapter()
     refresh_globals()
+    if not path then return end
+
     local time_pos = mp.get_property_number("time-pos")
     local time_pos_osd = mp.get_property_osd("time-pos/full")
     local curr_chapter = mp.get_property_number("chapter")
@@ -444,7 +451,7 @@ end
 
 local function write_chapter(format, force_write)
     refresh_globals()
-    if not force_write and chapter_count == 0 or not chapters_modified then
+    if not force_write and (chapter_count == 0 or not chapters_modified) or not path then
         msg.debug("nothing to write")
         return
     end
@@ -461,8 +468,11 @@ local function write_chapter(format, force_write)
                            "CHAPTER" .. string.format("%02.f", i) .. "NAME=" .. curr.title .. "\n"
         elseif format == "chp" then
             next_chapter = time_pos .. " " .. curr.title .. "\n"
+        else
+            msg.warn("please specify the correct chapter format: chp/ogm.")
+            return
         end
-        if i == 1 then
+        if i == 1 and (o.global_chapters or is_protocol(path)) then
             insert_chapters = "# " .. path .. "\n\n" .. next_chapter
         else
             insert_chapters = insert_chapters .. next_chapter
@@ -517,5 +527,6 @@ mp.register_script_message("load_chapter", function() mark_chapter(true) end)
 mp.register_script_message("create_chapter", create_chapter, { repeatable = true })
 mp.register_script_message("remove_chapter", remove_chapter)
 mp.register_script_message("edit_chapter", edit_chapter)
-mp.register_script_message("write_chapter", function() write_chapter("chp", false) end)
-mp.register_script_message("write_chapter_ogm", function() write_chapter("ogm", false) end)
+mp.register_script_message("write_chapter", function(value, value2)
+    write_chapter(value, value2)
+end)
