@@ -1,5 +1,5 @@
 --[[
-    * adevice-list.lua v.2023-02-05
+    * adevice-list.lua v.2023-05-21
     *
     * AUTHORS: dyphire
     * License: MIT
@@ -108,7 +108,7 @@ end
 local function reset_cursor()
     local adeviceList = mp.get_property_native('audio-device-list', {})
     if current_name ~= nil and list.selected > 0 then
-        if string.match(adeviceList[list.selected].name, current_name) == nil then
+        if string.find(adeviceList[list.selected].name, current_name) == nil then
             list.selected = 0
         end
     end
