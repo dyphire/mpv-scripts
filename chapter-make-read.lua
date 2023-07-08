@@ -1,5 +1,5 @@
 --[[
-  * chapter-make-read.lua v.2023-07-07
+  * chapter-make-read.lua v.2023-07-08
   *
   * AUTHORS: dyphire
   * License: MIT
@@ -154,8 +154,8 @@ local function read_chapter_table()
             h, m, s = line:match("^(%d+):(%d+):(%d+[,%.]?%d+)")
             s = s:gsub(',', '.')
             t = h * 3600 + m * 60 + s
-            if line:match("^%d+:%d+:%d+.%d*[,%s].*") ~= nil then
-                n = line:match("^%d+:%d+:%d+.%d*[,%s](.*)")
+            if line:match("^%d+:%d+:%d+[,%.]?%d+[,%s].*") ~= nil then
+                n = line:match("^%d+:%d+:%d+[,%.]?%d+[,%s](.*)")
                 n = n:gsub(":%s%a?%a?:", "")
                     :gsub("^%s*(.-)%s*$", "%1")
             end
