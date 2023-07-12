@@ -12,11 +12,12 @@ Modified from: [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github
 
 ## chapter-make-read.lua
 
-Automatically read an load the namesake external chapter file with extension of `.chp`. 
+Try to load an external `.chp` "chapter sidecar file" when opening a video. (Analog to an external subtitle file like .SRT).
 
-Example: `video.mp4.chp` to `video.mp4`.
-
-- You could change all parameters of script by editing your `script-opts/chapter_make_read.conf`. see [chapter-make-read.lua](chapter-make-read.lua) for details.
+Configuration:
+- `video.mp4.chp` is the chapter file for `video.mp4` with the option `basename_with_ext = true` in `chapter-make-read.lua`
+- `video.chp` for `video.mp4` with the option `basename_with_ext = false` in `chapter-make-read.lua`
+- You could change all parameters of the script by editing your `script-opts/chapter_make_read.conf`, see: [chapter-make-read.lua](chapter-make-read.lua)
 - Timestamps for external chapter files should use the 12-bit format of `hh:mm:ss.sss`.
 - The external chapter files encoding should be UTF-8 and the linebreak should be Unix(LF).
 
