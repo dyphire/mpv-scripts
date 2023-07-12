@@ -1,5 +1,5 @@
 --[[
-  * chapter-make-read.lua v.2023-07-08
+  * chapter-make-read.lua v.2023-07-12
   *
   * AUTHORS: dyphire
   * License: MIT
@@ -122,20 +122,25 @@ end
 
 --create global_chapters_dir if it doesn't exist
 global_chapters_dir = mp.command_native({ "expand-path", o.global_chapters_dir })
-if utils.readdir(global_chapters_dir) == nil then
-    local is_windows = package.config:sub(1, 1) == "\\"
-    local windows_args = { 'powershell', '-NoProfile', '-Command', 'mkdir', string.format("\"%s\"", global_chapters_dir) }
-    local unix_args = { 'mkdir', '-p', global_chapters_dir }
-    local args = is_windows and windows_args or unix_args
-    local res = mp.command_native({ name = "subprocess", capture_stdout = true, playback_only = false, args = args })
-    if res.status ~= 0 then
-        msg.error("Failed to create global_chapters_dir save directory " .. global_chapters_dir ..
+if global_chapters_dir and global_chapters_dir ~= '' then
+    local meta, meta_error = utils.file_info(global_chapters_dir)
+    if not meta or not meta.is_dir then
+        local is_windows = package.config:sub(1, 1) == "\\"
+        local windows_args = { 'powershell', '-NoProfile', '-Command', 'mkdir', string.format("\"%s\"", global_chapters_dir) }
+        local unix_args = { 'mkdir', '-p', global_chapters_dir }
+        local args = is_windows and windows_args or unix_args
+        local res = mp.command_native({ name = "subprocess", capture_stdout = true, playback_only = false, args = args })
+        if res.status ~= 0 then
+            msg.error("Failed to create global_chapters_dir save directory " .. global_chapters_dir ..
             ". Error: " .. (res.error or "unknown"))
-        return
+            return
+        end
     end
 end
 
 local function read_chapter(func)
+    local meta, meta_error = utils.file_info(chapter_fullpath)
+    if not meta or not meta.is_file then return end
     local f = io.open(chapter_fullpath, "r")
     if not f then return end
     local contents = {}
@@ -263,27 +268,32 @@ local function mark_chapter(force_overwrite)
     local chapters_time = {}
     local chapters_title = {}
     local fpath = dir
-    if is_protocol(path) or utils.readdir(dir) == nil then
+    if is_protocol(path) then
         fpath = global_chapters_dir
         fname = str_decode(mp.get_property("media-title"))
         if o.hash then fname = get_chapter_filename(path) end
-    end
-    if o.external_chapter_subpath ~= '' and not is_protocol(path) then
-        subpath = utils.join_path(dir, o.external_chapter_subpath)
-        fpath = subpath
-        if io.open(fpath, "r") == nil then
+    elseif o.external_chapter_subpath ~= '' then
+        fpath = utils.join_path(dir, o.external_chapter_subpath)
+        local meta, meta_error = utils.file_info(fpath)
+        if not meta or not meta.is_dir then
             fpath = dir
         end
     end
-    if o.global_chapters and not is_protocol(path) and (subpath and io.open(subpath, "r") == nil) then
+
+    if o.global_chapters and global_chapters_dir and global_chapters_dir ~= '' and not is_protocol(path) then
         fpath = global_chapters_dir
-        if o.hash and o.global_chapters then
-            fname = get_chapter_filename(path)
+        local meta, meta_error = utils.file_info(fpath)
+        if meta and meta.is_dir then
+            if o.hash then
+                fname = get_chapter_filename(path)
+            end
         end
     end
+
     local chapter_filename = fname .. o.chapter_file_ext
     chapter_fullpath = utils.join_path(fpath, chapter_filename)
-    if io.open(chapter_fullpath, "r") == nil and not is_protocol(path) then
+    local fmeta, fmeta_error = utils.file_info(chapter_fullpath)
+    if (not fmeta or not fmeta.is_file) and not is_protocol(path) then
         fname = str_decode(mp.get_property("filename"))
         chapter_filename = fname .. o.chapter_file_ext
         chapter_fullpath = utils.join_path(dir, chapter_filename)
