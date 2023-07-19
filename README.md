@@ -128,14 +128,6 @@ This script helps you to create a history file `.mpv.history` in the specified p
 
 Modified from [yuukidach/history-bookmark.lua](https://github.com/yuukidach/mpv-scripts/blob/master/history-bookmark.lua)
 
-## mediaInfo.lua
-
-Use `MediaInfo` to get media info and print it on OSD.
-
-And shared the `hdr-format` property by [shared_script_properties](https://mpv.io/manual/master/#command-interface-shared-script-properties), available for conditional profiles.
-
-Modified from [stax76/misc.lua ](https://github.com/stax76/mpv-scripts/blob/main/misc.lua)
-
 ## mpv-animated.lua
 
 Creates high quality animated webp/gif using mpv hotkeys. Requires that FFmpeg be installed. (Windows)
