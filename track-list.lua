@@ -1,5 +1,5 @@
 --[[
-    * track-list.lua v.2023-12-24
+    * track-list.lua v.2024-1-6
     *
     * AUTHORS: dyphire
     * License: MIT
@@ -108,18 +108,17 @@ local function esc_for_title(str)
 end
 
 local function esc_for_codec(str)
-    if str:find("MPEG2") then str = "MPEG2"
-    elseif str:find("DVVIDEO") then str = "DV"
-    elseif str:find("PCM") then str = "PCM"
-    elseif str:find("PGS") then str = "PGS"
-    elseif str:find("SUBRIP") then str = "SRT"
-    elseif str:find("VTT") then str = "VTT"
-    elseif str:find("DVD_SUB") then str = "VOB_SUB"
-    elseif str:find("DVB_SUB") then str = "DVB_SUB"
-    elseif str:find("DVB_TELE") then str = "TELETEXT"
-    elseif str:find("ARIB") then str = "ARIB"
-    end
-    return str
+    if str:find("MPEG2") then return "MPEG2"
+    elseif str:find("DVVIDEO") then return "DV"
+    elseif str:find("PCM") then return "PCM"
+    elseif str:find("PGS") then return "PGS"
+    elseif str:find("SUBRIP") then return "SRT"
+    elseif str:find("VTT") then return "VTT"
+    elseif str:find("DVD_SUB") then return "VOB"
+    elseif str:find("DVB_SUB") then return "DVB"
+    elseif str:find("DVB_TELE") then return "TELETEXT"
+    elseif str:find("ARIB") then return "ARIB"
+    else return str end
 end
 
 local function getTracks(dest)
@@ -157,8 +156,9 @@ local function getTrackTitle(trackId, dest)
     local filename = propNative("filename/no-ext")
 
     if trackCodec then trackCodec = esc_for_codec(trackCodec) end
-    if trackTitle then trackTitle = replace(trackTitle, filename, "") end
-    if trackExternal then trackTitle = esc_for_title(trackTitle) end
+    if trackExternal and trackTitle then
+        trackTitle = esc_for_title(replace(trackTitle, filename, ""))
+    end
     if trackTitle and trackTitle:len() > o.slice_longfilenames_amount + 5 then
         trackTitle = trackTitle:sub(1, o.slice_longfilenames_amount) .. " ..."
     end
