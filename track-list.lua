@@ -1,5 +1,5 @@
 --[[
-    * track-list.lua v.2024-1-7
+    * track-list.lua v.2024-01-07
     *
     * AUTHORS: dyphire
     * License: MIT
@@ -39,7 +39,7 @@ local o = {
     --amount of entries to show before slicing. Optimal value depends on font/video size etc.
     num_entries = 16,
     --slice long filenames, and how many chars to show
-    slice_longfilenames_amount = 100,
+    max_title_length = 100,
     -- wrap the cursor around the top and bottom of the list
     wrap = true,
     -- set dynamic keybinds to bind when the list is open
@@ -111,7 +111,7 @@ local function isTrackDisabled(index, type)
     or (type == "sub" and isTrackSelected(index, "sub2"))
 end
 
-function get_track_title(track, type, filename)
+local function get_track_title(track, type, filename)
     local title = track.title or ''
     local codec = escape_codec(track.codec)
 
@@ -119,8 +119,8 @@ function get_track_title(track, type, filename)
         if filename ~= '' then title = title:gsub(filename .. '%.?', '') end
         if title:lower() == codec:lower() then title = '' end
     end
-    if o.slice_longfilenames_amount > 0 and title:len() > o.slice_longfilenames_amount + 5 then
-        title = title:sub(1, o.slice_longfilenames_amount) .. " ..."
+    if o.max_title_length > 0 and title:len() > o.max_title_length + 5 then
+        title = title:sub(1, o.max_title_length) .. " ..."
     end
     if title == '' then
         local name = type:sub(1, 1):upper() .. type:sub(2, #type)

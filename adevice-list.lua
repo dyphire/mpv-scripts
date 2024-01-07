@@ -1,5 +1,5 @@
 --[[
-    * adevice-list.lua v.2023-05-21
+    * adevice-list.lua v.2024-01-07
     *
     * AUTHORS: dyphire
     * License: MIT
@@ -154,3 +154,8 @@ mp.observe_property('audio-device-list', 'string', function()
 end)
 
 mp.register_script_message("toggle-adevice-browser", function() list:toggle() end)
+
+mp.register_event('end-file', function()
+    list:close()
+    mp.unobserve_property(adevice_list)
+end)

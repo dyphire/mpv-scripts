@@ -122,7 +122,7 @@ OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition �
 
 ## open_dialog.lua
 
-快捷键载入文件/网址/其他字幕或音轨/高级次字幕（Windows）
+快捷键载入文件/网址/其他字幕或音轨（Windows）
 
 修改自 [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog)
 

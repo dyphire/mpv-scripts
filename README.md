@@ -136,7 +136,7 @@ Modified from [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-we
 
 ## open_dialog.lua
 
-Load file/url/other subtitles/other audio tracks/advanced subtitle filter. (Windows)
+Load file/url/other subtitles/other audio tracks. (Windows)
 
 Modified from [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog)
 
