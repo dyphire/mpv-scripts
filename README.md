@@ -136,9 +136,9 @@ Modified from [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-we
 
 ## open_dialog.lua
 
-Load file/url/other subtitles/other audio tracks. (Windows)
+Load folder/files/url/iso/clipboard/other subtitles/other audio tracks/other video tracks. (Windows)
 
-Modified from [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog)
+Inspiration from [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog), [tsl0922/dialog.lua](https://github.com/tsl0922/mpv-menu-plugin/blob/main/lua/dialog.lua)
 
 ## [playlistmanager.lua](https://github.com/dyphire/mpv-playlistmanager)
 
