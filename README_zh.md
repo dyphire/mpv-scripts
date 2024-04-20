@@ -116,7 +116,7 @@ OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition �
 
 ## mpv-animated.lua
 
-使用 mpv 热键创建高质量的 webp/gif 动图，基于`ffmpeg`(Windows)
+使用 mpv 热键创建高质量的 webp/gif 动图，基于`ffmpeg`
 
 修改自 [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-webp-generator)
 

@@ -130,7 +130,7 @@ Modified from [yuukidach/history-bookmark.lua](https://github.com/yuukidach/mpv-
 
 ## mpv-animated.lua
 
-Creates high quality animated webp/gif using mpv hotkeys. Requires that FFmpeg be installed. (Windows)
+Creates high quality animated webp/gif using mpv hotkeys. Requires that FFmpeg be installed.
 
 Modified from [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-webp-generator)
 
