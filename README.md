@@ -120,7 +120,7 @@ Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://gi
 
 Fixed video freezing caused when switching audio tracks.
 
-Ref: [MPV video stutters when certain audio filter enabled · Issue #9591 · mpv-player/mpv ](https://github.com/mpv-player/mpv/issues/9591)
+Ref: [Switching to an external high bitrate audio track for the first time during playback will cause the video to freeze and lag continuously · Issue #13915 · mpv-player/mpv](https://github.com/mpv-player/mpv/issues/13915)
 
 ## [history-bookmark.lua](https://github.com/dyphire/yuukidach-mpv-scripts/blob/master/history-bookmark.lua)
 

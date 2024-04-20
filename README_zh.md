@@ -111,7 +111,7 @@ OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition �
 
 修复切换音轨时伴随的视频冻结卡顿的问题
 
-参考：[MPV video stutters when certain audio filter enabled · Issue #9591 · mpv-player/mpv ](https://github.com/mpv-player/mpv/issues/9591)
+参考：[Switching to an external high bitrate audio track for the first time during playback will cause the video to freeze and lag continuously · Issue #13915 · mpv-player/mpv](https://github.com/mpv-player/mpv/issues/13915)
 
 
 ## mpv-animated.lua
