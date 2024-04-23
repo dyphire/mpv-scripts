@@ -146,6 +146,12 @@ Mpv lua script to create and manage playlists
 
 Modified from [jonniek/mpv-playlistmanager](https://github.com/jonniek/mpv-playlistmanager)
 
+## [skiptosilence.lua](https://github.com/dyphire/detuur-mpv-scripts/blob/dev/skiptosilence.lua)
+
+This script skips to the next silence in the file. The intended use for this is to skip until the end of an opening or ending sequence, at which point there's often a short period of silence.
+
+Modified from [detuur-mpv-scripts/skiptosilence.lua](https://github.com/Eisa01/detuur-mpv-scripts/blob/master/skiptosilence.lua)
+
 ## sub_export.lua
 
 Export the internal subtitles of the playback file. Requires that FFmpeg be installed.
