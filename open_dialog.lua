@@ -243,12 +243,11 @@ end
 
 -- Returns a string of UTF-8 text from the clipboard
 local function get_clipboard()
-    if not powershell then pwsh_check() end
     local res = mp.command_native({
         name = 'subprocess',
         playback_only = false,
         capture_stdout = true,
-        args = { powershell, '-NoProfile', '-Command', [[& {
+        args = { 'powershell', '-NoProfile', '-Command', [[& {
             Trap {
                 Write-Error -ErrorRecord $_
                 Exit 1
