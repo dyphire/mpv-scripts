@@ -4,6 +4,12 @@
 
 Interractive audio-device list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
 
+## [clipboard.lua](https://github.com/dyphire/mpv-clipboard/blob/dev/clipboard.lua)
+
+Provides generic low-level clipboard commands for users and script writers.
+
+Modified from: [CogentRedTester/mpv-clipboard](https://github.com/CogentRedTester/mpv-clipboard)
+
 ## chapter-list.lua
 
 Interractive chapter-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list), [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)  be installed.
