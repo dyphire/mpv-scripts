@@ -243,19 +243,19 @@ end
 local function open_clipboard(path, type, i)
     local path = path:gsub("^[\'\"]", ""):gsub("[\'\"]$", ""):gsub('^%s+', ''):gsub('%s+$', '')
     if path:find('^%a[%w.+-]-://') then
-        mp.commandv('loadfile', path)
+        mp.commandv('loadfile', path, 'append')
     else
         local meta = utils.file_info(path)
         if not meta then
-            mp.osd_message('Clipboard is not a valid URL or file path')
-            msg.warn('Clipboard is not a valid URL or file path')
+            mp.osd_message('Clipboard path is invalid')
+            msg.warn('Clipboard path is invalid')
         elseif meta.is_dir then
             open_folder(path, i)
         elseif meta.is_file then
             open_files(path, type, i, true)
         else
-            mp.osd_message('Clipboard is not a valid URL or file path')
-            msg.warn('Clipboard is not a valid URL or file path')
+            mp.osd_message('Clipboard path is invalid')
+            msg.warn('Clipboard path is invalid')
         end
     end
 end
