@@ -138,6 +138,10 @@ Modified from [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-we
 
 Load folder/files/url/iso/clipboard/other subtitles/other audio tracks/other video tracks. (Windows)
 
+**Note**: Windows 10/11 users are recommended to use it with PowerShell 7. Advantages: better performance, more modern dialog styles.
+
+- Official Installation Command: `winget install Microsoft.PowerShell`
+
 Inspiration from [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog), [tsl0922/dialog.lua](https://github.com/tsl0922/mpv-menu-plugin/blob/main/lua/dialog.lua)
 
 ## [playlistmanager.lua](https://github.com/dyphire/mpv-playlistmanager)

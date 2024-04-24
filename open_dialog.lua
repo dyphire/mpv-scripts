@@ -56,7 +56,6 @@ local function pwsh_check()
         powershell = "pwsh"
     end
 end
-pwsh_check()
 
 -- open bluray iso or dir
 local function open_bluray(path)
@@ -109,6 +108,7 @@ end
 
 -- import folder
 local function import_folder()
+    if not powershell then pwsh_check() end
     local was_ontop = mp.get_property_native("ontop")
     if was_ontop then mp.set_property_native("ontop", false) end
     local powershell_script = [[
@@ -151,6 +151,7 @@ end
 
 -- import files
 local function import_files(type)
+    if not powershell then pwsh_check() end
     local filter = ''
     local was_ontop = mp.get_property_native("ontop")
     if was_ontop then mp.set_property_native("ontop", false) end
@@ -206,6 +207,7 @@ end
 
 -- open url
 local function import_url()
+    if not powershell then pwsh_check() end
     local was_ontop = mp.get_property_native("ontop")
     if was_ontop then mp.set_property_native("ontop", false) end
     local res = mp.command_native({
@@ -232,6 +234,7 @@ end
 
 -- Returns a string of UTF-8 text from the clipboard
 local function get_clipboard()
+    if not powershell then pwsh_check() end
     local res = mp.command_native({
         name = 'subprocess',
         playback_only = false,
