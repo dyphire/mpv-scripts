@@ -57,6 +57,9 @@ local function pwsh_check()
     end
 end
 
+-- https://github.com/mpv-player/mpv/blob/master/etc/mpv-icon-8bit-16x16.png
+local mpv_icon_base64 = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACvklEQVQ4y3WTSWhUWRSGv/MmU1UpwYSoFbs0VXFo7IhTowgaJGrEhbYLFw44LNqFjWD3Og3dLsSFLlwILgRbXShuXPRCEcUhEUQRIyZROnGImipRkjhVXr2q9+69LrpSiMOBs7nn8t9z7v8d4esQwKqkVM4MoCtpvrz8edhL61obG+KTf3fEaReRZkFcbfRAaKKLw/6bI7dHO/OA+paAuza1YWvcTRwVpPYbnWEwBT8c23vp1b9ngBDArtSc9tT67bVu8h9BPICmWRl+Xr2YzNwMumx4P/oOQTzP9jam401PnxT6ewEtgCyZtHz2tGT6niDxmpoYew79yoK2FrTWKKXQWtN9tZcTf56mFAQYjJ/7+HLRnbc3+y3ArY817BMkDrDn8G4WtLVw8q+zvBkaRmuN1pp5rT+y8++tlbklXh9r2Ae4FjDBs712gMzsLPNXzkUpxcDdJxz57RgXTl4h8EsopfhpxRx+yKQB8GxvDeBZgGuJ1QQwc1G2+mIYhRT9IhdPXWL/joN0dz1AKcWMef8LWGJlAM+p+B0CtjGmKhCUivgln6BcxC5bRGGE1hqjqxiEgOUARhmVd8TJPu5+Wv20QlBAmYg1m1exdlsbtmujtWaw9wUAyqg8YBwgKoZ+V9KbmB3sf8b9a320rJjDzIXNbNr7C/VTJ1W76rnxiPxgDoBi6HcBkQ1YEsnrKYnUFkGcns4+UtkU63atJpaoqVrZd/M/zh08j1IKgwkejfT+8TYaGZIKTHXL6lfuTiUaD4wPmG6ezoyWNNponve8JPdsqErkq7F8x62R68eB0XGUJwBTlta17misndYhSM13UA7yhdyB26Odp4HXQGkcZQ2Uc8XnA37gX4u5cXEsJ2mJFQNUpKOhD+X3F/pGHnQ8LNy/DAwDpS+XSQAPSAITgQTgfmbZGPAB+AiUx9f6E25gOc5E3m0HAAAAAElFTkSuQmCC"
+
 -- open bluray iso or dir
 local function open_bluray(path)
     mp.set_property('bluray-device', path)
@@ -111,7 +114,7 @@ local function import_folder()
     if not powershell then pwsh_check() end
     local was_ontop = mp.get_property_native("ontop")
     if was_ontop then mp.set_property_native("ontop", false) end
-    local powershell_script = [[
+    local powershell_script = string.format([[
         Add-Type -AssemblyName System.Windows.Forms
         $u8 = [System.Text.Encoding]::UTF8
         $out = [Console]::OpenStandardOutput()
@@ -119,7 +122,10 @@ local function import_folder()
         $TopForm.TopMost = $true
         $TopForm.ShowInTaskbar = $false
         $TopForm.Visible = $false
-        $TopForm.ShowIcon = $false
+        $IconBytes = [Convert]::FromBase64String("%s")
+        $IconStream = New-Object IO.MemoryStream($IconBytes, 0, $IconBytes.Length)
+        $IconStream.Write($IconBytes, 0, $IconBytes.Length);
+        $TopForm.Icon = [System.Drawing.Icon]::FromHandle((New-Object System.Drawing.Bitmap -Argument $IconStream).GetHIcon())
         $folderBrowser = New-Object -TypeName System.Windows.Forms.FolderBrowserDialog
         $folderBrowser.RootFolder = "Desktop"
         $folderBrowser.ShowNewFolderButton = $true
@@ -131,7 +137,7 @@ local function import_folder()
             $out.Write($u8selectedFolder, 0, $u8selectedFolder.Length)
         }
         $TopForm.Dispose()
-    ]]
+    ]], mpv_icon_base64)
 
     local res = mp.command_native({
         name = 'subprocess',
@@ -183,7 +189,10 @@ local function import_files(type)
             $TopForm.TopMost = $true
             $TopForm.ShowInTaskbar = $false
             $TopForm.Visible = $false
-            $TopForm.ShowIcon = $false
+            $IconBytes = [Convert]::FromBase64String("%s")
+            $IconStream = New-Object IO.MemoryStream($IconBytes, 0, $IconBytes.Length)
+            $IconStream.Write($IconBytes, 0, $IconBytes.Length);
+            $TopForm.Icon = [System.Drawing.Icon]::FromHandle((New-Object System.Drawing.Bitmap -Argument $IconStream).GetHIcon())
             $ofd = New-Object System.Windows.Forms.OpenFileDialog
             $ofd.Multiselect = $true
             $ofd.Filter = "%s"
@@ -194,7 +203,7 @@ local function import_files(type)
                 }
             }
             $TopForm.Dispose()
-        }]], filter) }
+        }]], mpv_icon_base64, filter) }
     })
     if was_ontop then mp.set_property_native("ontop", true) end
     if (res.status ~= 0) then return end
