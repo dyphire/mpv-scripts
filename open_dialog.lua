@@ -72,7 +72,7 @@ local function open_dvd(path)
 end
 
 -- open folder
-local function open_folder(path)
+local function open_folder(path, i)
     local fpath, dir = utils.split_path(path)
     if utils.file_info(utils.join_path(path, "BDMV")) then
         open_bluray(path)
@@ -83,7 +83,7 @@ local function open_folder(path)
     elseif dir:upper() == "VIDEO_TS" then
         open_dvd(fpath)
     else
-        mp.commandv('loadfile', path)
+        mp.commandv('loadfile', path, i == 1 and 'replace' or 'append')
     end
 end
 
@@ -149,8 +149,8 @@ local function import_folder()
     if (res.status ~= 0) then
         mp.osd_message("Failed to open folder dialog.")
     elseif res.stdout and res.stdout ~= "" then
-        local folder_path = res.stdout:match("(.-)\n?$") -- Trim any trailing newline
-        open_folder(folder_path)
+        local folder_path = res.stdout:match("(.-)[\r\n]?$") -- Trim any trailing newline
+        open_folder(folder_path, 1)
     end
 end
 
@@ -207,7 +207,7 @@ local function import_files(type)
     if was_ontop then mp.set_property_native("ontop", true) end
     if (res.status ~= 0) then return end
     local i = 0
-    for path in string.gmatch(res.stdout, '[^\n]+') do
+    for path in string.gmatch(res.stdout, '[^\r\n]+') do
         i = i + 1
         open_files(path, type, i, false)
     end
@@ -224,16 +224,10 @@ local function get_clipboard()
                 Write-Error -ErrorRecord $_
                 Exit 1
             }
-    
-            $clip = ""
-            if (Get-Command "Get-Clipboard" -errorAction SilentlyContinue) {
-                $clip = Get-Clipboard -Raw -Format Text -TextFormatType UnicodeText
-            } else {
-                Add-Type -AssemblyName PresentationCore
-                $clip = [Windows.Clipboard]::GetText()
+            $clip = Get-Clipboard -Raw -Format Text -TextFormatType UnicodeText
+            if (-not $clip) {
+                $clip = Get-Clipboard -Raw -Format FileDropList
             }
-    
-            $clip = $clip -Replace "`r",""
             $u8clip = [System.Text.Encoding]::UTF8.GetBytes($clip)
             [Console]::OpenStandardOutput().Write($u8clip, 0, $u8clip.Length)
         }]] }
@@ -244,25 +238,35 @@ local function get_clipboard()
     return ''
 end
 
--- open for clipboard
-local function import_clipboard(type)
-    local clip = get_clipboard():gsub("^[\'\"]", ""):gsub("[\'\"]$", "")
-    if clip ~= '' then
-        if clip:find('^%a[%w.+-]-://') then
-            mp.commandv('loadfile', clip)
+-- open files from clipboard
+local function open_clipboard(path, type, i)
+    local path = path:gsub("^[\'\"]", ""):gsub("[\'\"]$", "")
+    if path:find('^%a[%w.+-]-://') then
+        mp.commandv('loadfile', path)
+    else
+        local meta = utils.file_info(path)
+        if not meta then
+            mp.osd_message('Clipboard is not a valid URL or file path')
+            msg.warn('Clipboard is not a valid URL or file path')
+        elseif meta.is_dir then
+            open_folder(path, i)
+        elseif meta.is_file then
+            open_files(path, type, i, true)
         else
-            local meta = utils.file_info(clip)
-            if not meta then
-                mp.osd_message('Clipboard is not a valid URL or file path')
-                msg.warn('Clipboard is not a valid URL or file path')
-            elseif meta.is_dir then
-                open_folder(clip)
-            elseif meta.is_file then
-                open_files(clip, type, 1, true)
-            else
-                mp.osd_message('Clipboard is not a valid URL or file path')
-                msg.warn('Clipboard is not a valid URL or file path')
-            end
+            mp.osd_message('Clipboard is not a valid URL or file path')
+            msg.warn('Clipboard is not a valid URL or file path')
+        end
+    end
+end
+
+-- import clipboard
+local function import_clipboard(type)
+    local clip = get_clipboard()
+    if clip ~= '' then
+        local i = 0
+        for path in string.gmatch(clip, '[^\r\n]+') do
+            i = i + 1
+            open_clipboard(path, type, i)
         end
     else
         mp.osd_message('Clipboard is empty')
