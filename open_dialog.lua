@@ -3,10 +3,9 @@
 -- link: https://github.com/dyphire/mpv-scripts
 
 --[[
-The script calls up a window in mpv to quickly load the folder/files/url/iso/clipboard/other subtitles/other audio tracks/other video tracks.
+The script calls up a window in mpv to quickly load the folder/files/iso/clipboard (support url)/other subtitles/other audio tracks/other video tracks.
 Usage, add bindings to input.conf:
 key        script-message-to open_dialog import_folder
-key        script-message-to open_dialog import_url
 key        script-message-to open_dialog import_files
 key        script-message-to open_dialog import_files <type>  # vid, aid, sid (video/audio/subtitle track)
 key        script-message-to open_dialog import_clipboard
@@ -214,33 +213,6 @@ local function import_files(type)
     end
 end
 
--- open url
-local function import_url()
-    if not powershell then pwsh_check() end
-    local was_ontop = mp.get_property_native("ontop")
-    if was_ontop then mp.set_property_native("ontop", false) end
-    local res = mp.command_native({
-        name = 'subprocess',
-        playback_only = false,
-        capture_stdout = true,
-        args = { powershell, '-NoProfile', '-Command', [[& {
-            Trap {
-                Write-Error -ErrorRecord $_
-                Exit 1
-            }
-            Add-Type -AssemblyName Microsoft.VisualBasic
-            $u8 = [System.Text.Encoding]::UTF8
-            $out = [Console]::OpenStandardOutput()
-            $urlname = [Microsoft.VisualBasic.Interaction]::InputBox("Address", "Open", "https://")
-            $u8urlname = $u8.GetBytes("$urlname")
-            $out.Write($u8urlname, 0, $u8urlname.Length)
-        }]]    }
-    })
-    if was_ontop then mp.set_property_native("ontop", true) end
-    if (res.status ~= 0) then return end
-    mp.commandv('loadfile', res.stdout)
-end
-
 -- Returns a string of UTF-8 text from the clipboard
 local function get_clipboard()
     local res = mp.command_native({
@@ -318,5 +290,4 @@ mp.register_event("end-file", end_file)
 
 mp.register_script_message('import_folder', import_folder)
 mp.register_script_message('import_files', import_files)
-mp.register_script_message('import_url', import_url)
 mp.register_script_message('import_clipboard', import_clipboard)

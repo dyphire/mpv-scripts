@@ -136,7 +136,7 @@ Modified from [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-we
 
 ## open_dialog.lua
 
-Load folder/files/url/iso/clipboard/other subtitles/other audio tracks/other video tracks. (Windows)
+Load folder/files/iso/clipboard (support url)/other subtitles/other audio tracks/other video tracks. (Windows)
 
 **Note**: Windows 10/11 users are recommended to use it with PowerShell 7. Advantages: better performance, more modern dialog styles.
 

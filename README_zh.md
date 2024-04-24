@@ -122,7 +122,7 @@ OSD 交互式 edition 菜单，如果检测到播放文件存在多个 edition �
 
 ## open_dialog.lua
 
-快捷键载入文件夹/文件/网址/ISO 文件/剪贴板/其他字幕或音轨或视频轨（Windows）
+快捷键载入文件夹/文件/ISO 文件/剪贴板（支持 URL）/其他字幕或音轨或视频轨（Windows）
 
 **友情提醒**：Windows 10/11 用户建议配合 PowerShell 7 使用，优点：更好的性能，更现代化的对话框样式
 
