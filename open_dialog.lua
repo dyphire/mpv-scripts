@@ -7,9 +7,10 @@ The script calls up a window in mpv to quickly load the folder/files/iso/clipboa
 Usage, add bindings to input.conf:
 key        script-message-to open_dialog import_folder
 key        script-message-to open_dialog import_files
-key        script-message-to open_dialog import_files <type>  # vid, aid, sid (video/audio/subtitle track)
+key        script-message-to open_dialog import_files <type>      # vid, aid, sid (video/audio/subtitle track)
 key        script-message-to open_dialog import_clipboard
 key        script-message-to open_dialog import_clipboard <type>  # vid, aid, sid (video/audio/subtitle track)
+key        script-message-to open_dialog set_clipboard <text>     # text can be mpv properties as ${path}
 ]]--
 
 local msg = require 'mp.msg'
@@ -240,7 +241,7 @@ end
 
 -- open files from clipboard
 local function open_clipboard(path, type, i)
-    local path = path:gsub("^[\'\"]", ""):gsub("[\'\"]$", "")
+    local path = path:gsub("^[\'\"]", ""):gsub("[\'\"]$", ""):gsub('^%s+', ''):gsub('%s+$', '')
     if path:find('^%a[%w.+-]-://') then
         mp.commandv('loadfile', path)
     else
@@ -274,6 +275,16 @@ local function import_clipboard(type)
     end
 end
 
+-- escapes a string so that it can be inserted into powershell as a string literal
+local function escape_powershell(str)
+    return '"'..string.gsub(str, '[$"`]', '`%1')..'"'
+end
+
+-- sets the contents of the clipboard to the given string
+local function set_clipboard(text)
+    msg.verbose('setting clipboard text:', text)
+    mp.commandv('run', 'powershell', '-NoProfile', '-command', 'set-clipboard', escape_powershell(text))
+end
 
 local function end_file(event)
     mp.unregister_event(end_file)
@@ -295,3 +306,4 @@ mp.register_event("end-file", end_file)
 mp.register_script_message('import_folder', import_folder)
 mp.register_script_message('import_files', import_files)
 mp.register_script_message('import_clipboard', import_clipboard)
+mp.register_script_message('set_clipboard', set_clipboard)
