@@ -243,7 +243,7 @@ end
 local function open_clipboard(path, type, i)
     local path = path:gsub("^[\'\"]", ""):gsub("[\'\"]$", ""):gsub('^%s+', ''):gsub('%s+$', '')
     if path:find('^%a[%w.+-]-://') then
-        mp.commandv('loadfile', path, 'append')
+        mp.commandv('loadfile', path, i == 1 and 'replace' or 'append')
     else
         local meta = utils.file_info(path)
         if not meta then
