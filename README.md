@@ -156,6 +156,12 @@ Mpv lua script to create and manage playlists
 
 Modified from [jonniek/mpv-playlistmanager](https://github.com/jonniek/mpv-playlistmanager)
 
+## [recent.lua](https://github.com/dyphire/recent)
+
+Logs played files to a history log file with an interactive 'recently played' menu that reads from the log. Allows for automatic or manual logging if you want a file bookmark menu instead.
+
+Modified from [hacel/recent](https://github.com/hacel/recent)
+
 ## [skiptosilence.lua](https://github.com/dyphire/detuur-mpv-scripts/blob/dev/skiptosilence.lua)
 
 This script skips to the next silence in the file. The intended use for this is to skip until the end of an opening or ending sequence, at which point there's often a short period of silence.
