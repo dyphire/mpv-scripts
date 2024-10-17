@@ -1,5 +1,5 @@
 --[[
-  * chapter-make-read.lua v.2024-10-15
+  * chapter-make-read.lua v.2024-10-17
   *
   * AUTHORS: dyphire
   * License: MIT
@@ -157,7 +157,8 @@ local function read_chapter_table()
     local line_pos = 0
     return read_chapter(function(line)
         local h, m, s, t, n, l
-        local line = line:gsub("\xE2\x80\x89", " ")
+        local thin_space = string.char(0xE2, 0x80, 0x89)
+        local line = line:gsub(thin_space, " ")
         if line:match("^%d+:%d+:%d+") ~= nil then
             h, m, s = line:match("^(%d+):(%d+):(%d+[,%.]?%d+)")
             s = s:gsub(',', '.')
@@ -393,8 +394,8 @@ local function input_title(default_input, cursor_pos, chapter_index)
         default_text = default_input,
         cursor_position = cursor_pos,
         submit = function(text)
-            change_chapter_list(text, chapter_index)
             input.terminate()
+            change_chapter_list(text, chapter_index)
         end,
         closed = function()
             if paused then return elseif o.pause_on_input then mp.set_property_native("pause", false) end
