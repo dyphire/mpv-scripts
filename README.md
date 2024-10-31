@@ -102,7 +102,7 @@ key script-message-to chapter_make_read write_chapter chp
 # Export ogm file
 key script-message-to chapter_make_read write_chapter ogm
 ```
-- if you want to have the ability to name/rename chapters, the minimum requirement for the mpv version is 0.39.0, or choose to install the [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)
+- if you want to have the ability to name/rename chapters, the minimum requirement for the mpv version is 0.38.0, or choose to install the [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)
   
 - Some recommendations
    -  another chapters script: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
