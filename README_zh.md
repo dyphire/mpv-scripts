@@ -6,7 +6,7 @@ OSD 交互式音频设备菜单，依赖 [scroll-list.lua](https://github.com/Co
 
 ## chapter-list.lua
 
-OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)，[mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)
+OSD 交互式章节菜单，依赖 [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list)
 
 修改自 [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 
@@ -89,7 +89,7 @@ key script-message-to chapter_make_read write_chapter chp
 # 创建 mpv 可读的 ogm 格式章节文件
 key script-message-to chapter_make_read write_chapter ogm
 ```
-- 如果你想能够命名/重命名章节，你需要安装
+- 如果你想能够命名/重命名章节，mpv 版本的最低要求为 0.39.0 ，或者选择安装
   <https://github.com/CogentRedTester/mpv-user-input>
 
 - 其他推荐

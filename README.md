@@ -12,7 +12,7 @@ Modified from: [CogentRedTester/mpv-clipboard](https://github.com/CogentRedTeste
 
 ## chapter-list.lua
 
-Interractive chapter-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list), [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)  be installed.
+Interractive chapter-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
 
 Modified from: [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github.com/CogentRedTester/mpv-scroll-list/blob/master/examples/chapter-list.lua)
 
@@ -96,9 +96,8 @@ key script-message-to chapter_make_read write_chapter chp
 # Export ogm file
 key script-message-to chapter_make_read write_chapter ogm
 ```
-- if you want to have the ability to name/rename chapters, you'll need to install
-  <https://github.com/CogentRedTester/mpv-user-input>
-
+- if you want to have the ability to name/rename chapters, the minimum requirement for the mpv version is 0.39.0, or choose to install the [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)
+  
 - Some recommendations
    -  another chapters script: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
    -  chapter format conversion tool：https://github.com/fireattack/chapter_converter
