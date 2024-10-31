@@ -4,9 +4,15 @@
 
 Interractive audio-device list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
 
+## auto-save-state.lua
+
+Periodically saves progress with write-watch-later-config, and also cleans up the watch later data after the file is finished playing (so playlists may continue at the correct file).
+
 ## [clipboard.lua](https://github.com/dyphire/mpv-clipboard/blob/dev/clipboard.lua)
 
 Provides generic low-level clipboard commands for users and script writers.
+
+Requires `powershell` on Windows,`pbcopy`/`pbpaste` on MacOS, `xclip` on X11, and `wl-copy`/`wl-paste` on Wayland. 
 
 Modified from: [CogentRedTester/mpv-clipboard](https://github.com/CogentRedTester/mpv-clipboard)
 
@@ -106,7 +112,7 @@ key script-message-to chapter_make_read write_chapter ogm
 
 Automatically skips chapters based on title.
 
-Modified from [po5/chapterskip](https://github.com/po5/chapterskip/blob/master/chapterskip.lua)
+Modified from [po5/chapterskip](https://github.com/po5/chapterskip)
 
 ## drcbox.lua
 
@@ -121,17 +127,30 @@ Interractive edition-list menu on OSD. Requires that [scroll-list.lua](https://g
 
 Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
 
-## [history-bookmark.lua](https://github.com/dyphire/yuukidach-mpv-scripts/blob/master/history-bookmark.lua)
+## history-bookmark.lua
 
 This script helps you to create a history file `.mpv.history` in the specified path. The next time you want to continue to watch it, you can open any videos in the folder. The script will lead you to the video played last time.
 
-Modified from [yuukidach/history-bookmark.lua](https://github.com/yuukidach/mpv-scripts/blob/master/history-bookmark.lua)
+Modified from [yuukidach/history-bookmark.lua](https://github.com/yuukidach/mpv-scripts/blob/master/history_bookmark.lua)
 
 ## mpv-animated.lua
 
 Creates high quality animated webp/gif using mpv hotkeys. Requires that FFmpeg be installed.
 
 Modified from [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-webp-generator)
+
+## mpv-torrserver.lua
+
+sends torrent info to [TorrServer](https://github.com/YouROK/TorrServer) and gets playlist. Supports torrent files and magnet links. Requires curl and [TorrServer](https://github.com/YouROK/TorrServer).
+
+### Usage
+Drag & Drop torrent into mpv, or:
+
+```sh
+mpv <magent link or torrent file>
+```
+
+Modified from [kritma/mpv-torrserver](https://github.com/kritma/mpv-torrserver)
 
 ## open_dialog.lua
 
@@ -155,7 +174,7 @@ Logs played files to a history log file with an interactive 'recently played' me
 
 Modified from [hacel/recent](https://github.com/hacel/recent)
 
-## [skiptosilence.lua](https://github.com/dyphire/detuur-mpv-scripts/blob/dev/skiptosilence.lua)
+## skiptosilence.lua
 
 This script skips to the next silence in the file. The intended use for this is to skip until the end of an opening or ending sequence, at which point there's often a short period of silence.
 
@@ -172,6 +191,12 @@ Modified from [kelciour/mpv-scripts/sub-export.lua](https://github.com/kelciour/
 ## track-list.lua
 
 Interractive track-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
+
+## trackselect.lua
+
+Automatically select your preferred tracks based on title, because --alang isn't smart enough.
+
+Modified from [po5/trackselect](https://github.com/po5/trackselect)
 
 ## [uosc.lua](https://github.com/dyphire/uosc)
 
