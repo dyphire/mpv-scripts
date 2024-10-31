@@ -122,12 +122,6 @@ Interractive edition-list menu on OSD. Requires that [scroll-list.lua](https://g
 
 Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
 
-## fix-avsync.lua
-
-Fixed video freezing caused when switching audio tracks.
-
-Ref: [Switching to an external high bitrate audio track for the first time during playback will cause the video to freeze and lag continuously · Issue #13915 · mpv-player/mpv](https://github.com/mpv-player/mpv/issues/13915)
-
 ## [history-bookmark.lua](https://github.com/dyphire/yuukidach-mpv-scripts/blob/master/history-bookmark.lua)
 
 This script helps you to create a history file `.mpv.history` in the specified path. The next time you want to continue to watch it, you can open any videos in the folder. The script will lead you to the video played last time.
