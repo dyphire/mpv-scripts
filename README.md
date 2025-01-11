@@ -188,6 +188,10 @@ The script support subtitles in srt, ass, and sup formats.
 
 Modified from [kelciour/mpv-scripts/sub-export.lua](https://github.com/kelciour/mpv-scripts/blob/master/sub-export.lua)
 
+## [sub-fastwhisper.lua](https://github.com/dyphire/mpv-sub-fastwhisper)
+
+Generate srt subtitles through voice transcription using faster-whisper
+
 ## track-list.lua
 
 Interractive track-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
