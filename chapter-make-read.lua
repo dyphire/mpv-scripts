@@ -157,7 +157,18 @@ local function read_chapter_table()
         local h, m, s, t, n, l
         local thin_space = string.char(0xE2, 0x80, 0x89)
         local line = line:gsub(thin_space, " ")
-        if line:match("^%d+:%d+:%d+") ~= nil then
+        if line:match("^%d+:[0-9,%.]+[,%s]") ~= nil then
+            m, s = line:match("^(%d+):(%d+[,%.]?%d+)")
+            s = s:gsub(',', '.')
+            t = m * 60 + s
+            if line:match("^%d+:%d+[,%.]?%d+[,%s].*") ~= nil then
+                n = line:match("^%d+:%d+[,%.]?%d+[,%s](.*)")
+                n = n:gsub(":%s%a?%a?:", "")
+                    :gsub("^%s*(.-)%s*$", "%1")
+            end
+            l = line
+            line_pos = line_pos + 1
+		elseif line:match("^%d+:%d+:%d+") ~= nil then
             h, m, s = line:match("^(%d+):(%d+):(%d+[,%.]?%d+)")
             s = s:gsub(',', '.')
             t = h * 3600 + m * 60 + s
