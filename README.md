@@ -202,6 +202,12 @@ Automatically select your preferred tracks based on title, because --alang isn't
 
 Modified from [po5/trackselect](https://github.com/po5/trackselect)
 
+## [trakt-scrobble.lua](https://github.com/dyphire/trakt-scrobble)
+
+A MPV script that checks in your movies and shows with Trakt.tv
+
+Modified from [LiTO773/trakt-mpv](https://github.com/LiTO773/trakt-mpv)
+
 ## [uosc.lua](https://github.com/dyphire/uosc)
 
 Feature-rich minimalist proximity-based UI for [MPV player](https://mpv.io/).
