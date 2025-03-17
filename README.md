@@ -27,6 +27,7 @@ Modified from: [CogentRedTester/mpv-scroll-list/chapter-list.lua](https://github
 Try to load an external `.chp` "chapter sidecar file" when opening a video. (Analog to an external subtitle file like .SRT).
 
 Configuration:
+
 - `video.mp4.chp` is the chapter file for `video.mp4` with the option `basename_with_ext = true` in `chapter-make-read.lua`
 - `video.chp` for `video.mp4` with the option `basename_with_ext = false` in `chapter-make-read.lua`
 - You could change all parameters of the script by editing your `script-opts/chapter_make_read.conf`, see: [chapter-make-read.lua](chapter-make-read.lua)
@@ -64,6 +65,7 @@ The script supports external chapter file content in the following formats:
 0:17:02.148,Title2
 0:28:10.114,Title3
 ```
+
  OGM format (`ogm`)
 
 ```
@@ -74,6 +76,7 @@ CHAPTER02NAME=Baby prepares to rock
 CHAPTER03=00:02:42.300
 CHAPTER03NAME=Baby rocks the house
 ```
+
 MediaInfo format (`mediainfo`)
 
 ```
@@ -102,11 +105,13 @@ key script-message-to chapter_make_read write_chapter chp
 # Export ogm file
 key script-message-to chapter_make_read write_chapter ogm
 ```
+
 - if you want to have the ability to name/rename chapters, the minimum requirement for the mpv version is 0.38.0, or choose to install the [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)
-  
+
 - Some recommendations
-   -  another chapters script: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
-   -  chapter format conversion tool：https://github.com/fireattack/chapter_converter
+  
+  - another chapters script: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
+  - chapter format conversion tool：https://github.com/fireattack/chapter_converter
 
 ## [chapterskip.lua](https://github.com/dyphire/chapterskip/blob/dev/chapterskip.lua)
 
@@ -123,6 +128,7 @@ Modified from https://gist.github.com/richardpl/0c8011dc23d7ac7b7831b2e6d680114f
 ## edition-list.lua
 
 Interractive edition-list menu on OSD. Requires that [scroll-list.lua](https://github.com/CogentRedTester/mpv-scroll-list) be installed.
+
 - Prints a message on the OSD if editions are found in the file, and temporarily switches the osd-playback-message to the editions-list property when switching. This makes it easier to tell the number and names while navigating editions.
 
 Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
@@ -144,6 +150,7 @@ Modified from [DonCanjas/mpv-webp-generator](https://github.com/DonCanjas/mpv-we
 sends torrent info to [TorrServer](https://github.com/YouROK/TorrServer) and gets playlist. Supports torrent files and magnet links. Requires curl and [TorrServer](https://github.com/YouROK/TorrServer).
 
 ### Usage
+
 Drag & Drop torrent into mpv, or:
 
 ```sh
@@ -179,6 +186,14 @@ Modified from [hacel/recent](https://github.com/hacel/recent)
 This script skips to the next silence in the file. The intended use for this is to skip until the end of an opening or ending sequence, at which point there's often a short period of silence.
 
 Modified from [detuur-mpv-scripts/skiptosilence.lua](https://github.com/Eisa01/detuur-mpv-scripts/blob/master/skiptosilence.lua)
+
+## sponsorblock_minimal.lua
+
+This script skips sponsored segments of YouTube and bilibili videos
+
+using data from https://github.com/ajayyy/SponsorBlock and https://github.com/hanydd/BilibiliSponsorBlock
+
+Modified from [jouni/mpv_sponsorblock_minimal](https://codeberg.org/jouni/mpv_sponsorblock_minimal)
 
 ## sub_export.lua
 
