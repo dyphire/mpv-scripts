@@ -12,7 +12,7 @@ Periodically saves progress with write-watch-later-config, and also cleans up th
 
 Provides generic low-level clipboard commands for users and script writers.
 
-Requires `powershell` on Windows,`pbcopy`/`pbpaste` on MacOS, `xclip` on X11, and `wl-copy`/`wl-paste` on Wayland. 
+Requires `powershell` on Windows,`pbcopy`/`pbpaste` on MacOS, `xclip` on X11, and `wl-copy`/`wl-paste` on Wayland.
 
 Modified from: [CogentRedTester/mpv-clipboard](https://github.com/CogentRedTester/mpv-clipboard)
 
@@ -107,9 +107,8 @@ key script-message-to chapter_make_read write_chapter ogm
 ```
 
 - if you want to have the ability to name/rename chapters, the minimum requirement for the mpv version is 0.38.0, or choose to install the [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)
-
 - Some recommendations
-  
+
   - another chapters script: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
   - chapter format conversion tool：https://github.com/fireattack/chapter_converter
 
@@ -189,7 +188,7 @@ Modified from [detuur-mpv-scripts/skiptosilence.lua](https://github.com/Eisa01/d
 
 ## sponsorblock_minimal.lua
 
-This script skips sponsored segments of YouTube and bilibili videos
+This script skip/mute sponsored segments of YouTube and bilibili videos
 
 using data from https://github.com/ajayyy/SponsorBlock and https://github.com/hanydd/BilibiliSponsorBlock
 
