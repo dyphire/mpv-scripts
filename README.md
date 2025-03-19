@@ -186,6 +186,12 @@ This script skips to the next silence in the file. The intended use for this is 
 
 Modified from [detuur-mpv-scripts/skiptosilence.lua](https://github.com/Eisa01/detuur-mpv-scripts/blob/master/skiptosilence.lua)
 
+## slicing_copy.lua
+
+This script is for mpv to cut fragments of the video.. Requires that FFmpeg be installed.
+
+Modified from [snylonue/mpv_slicing_copy](https://github.com/snylonue/mpv_slicing_copy)
+
 ## sponsorblock_minimal.lua
 
 This script skip/mute sponsored segments of YouTube and bilibili videos
