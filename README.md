@@ -132,6 +132,14 @@ Interractive edition-list menu on OSD. Requires that [scroll-list.lua](https://g
 
 Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
 
+## hdr-mode.lua
+
+Automatically switches the display's SDR and HDR modes for HDR passthrough based on the content of the video being played by the mpv
+
+Only works on Windows 10 and later systems
+
+Requires that [HDRCmd](https://github.com/res2k/HDRTray).
+
 ## history-bookmark.lua
 
 This script helps you to create a history file `.mpv.history` in the specified path. The next time you want to continue to watch it, you can open any videos in the folder. The script will lead you to the video played last time.
