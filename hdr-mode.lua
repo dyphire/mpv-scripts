@@ -4,6 +4,8 @@
 -- Automatically switches the display's SDR and HDR modes for HDR passthrough
 -- based on the content of the video being played by the mpv, only works on Windows 10 and later systems
 
+--! Required for use with mpv-display-plugin: https://github.com/dyphire/mpv-display-plugin
+
 local msg = require 'mp.msg'
 local utils = require 'mp.utils'
 local options = require 'mp.options'
@@ -27,17 +29,11 @@ local o = {
     -- Must be the true contrast information of the display, e.g. 100000 means 100000:1 maximum contrast
     -- OLED display do not need to change this, default: auto
     target_contrast = "auto",
-    -- Specify the path of HDRCmd executable, you can download it from here:
-    -- https://github.com/res2k/HDRTray
-    -- Supports absolute and relative paths
-    HDRCmd_path = "HDRCmd",
 }
 options.read_options(o, _, function() end)
 
-local HDRCmd = mp.command_native({ "expand-path", o.HDRCmd_path })
 local hdr_active = false
-local hdr_invalid = nil
-local last_luma_state = nil
+local hdr_supported = false
 local first_switch_check = true
 
 local state = {
@@ -47,43 +43,15 @@ local state = {
     inverse_mapping = mp.get_property_native("inverse-tone-mapping")
 }
 
-local function run_hdrcmd(arg)
-    local result = mp.command_native({
-        name = "subprocess",
-        args = { HDRCmd, arg },
-        playback_only = false,
-        capture_stdout = true,
-        capture_stderr = true,
-    })
-    if result.status ~= 0 then
-        msg.error("HDRCmd execution failed:", result.error or "unknown")
-        return false
-    end
-    return result.stdout
-end
-
 local function query_hdr_state()
-    local res = run_hdrcmd("status")
-    if not res then return end
-    if res:match("HDR is on") then
-        hdr_active = true
-        hdr_invalid = false
-    elseif res:match("HDR is off") then
-        hdr_active = false
-        hdr_invalid = false
-    else
-        hdr_invalid = true
-    end
+    hdr_supported = mp.get_property_native("user-data/display-info/hdr-supported")
+    hdr_active = mp.get_property_native("user-data/display-info/hdr-status") == "on"
 end
 
 local function switch_display_mode(enable)
     if enable == hdr_active then return end
     local arg = enable and "on" or "off"
-    local res = run_hdrcmd(arg)
-    if res then
-        hdr_active = enable
-        msg.info("Switched HDR display to: ", arg:upper())
-    end
+    mp.commandv('script-message', 'toggle-hdr-display', arg)
 end
 
 local function apply_hdr_settings()
@@ -105,6 +73,48 @@ local function reset_target_settings()
     mp.set_property_native("inverse-tone-mapping", state.inverse_mapping)
 end
 
+local function pause_if_needed()
+    local paused = mp.get_property_native("pause")
+    if not paused then
+        mp.set_property_native("pause", true)
+        return true
+    end
+    return false
+end
+
+local function resume_if_needed(paused_before)
+    if paused_before then
+        mp.add_timeout(1, function()
+            mp.set_property_native("pause", false)
+        end)
+    end
+end
+
+local function handle_hdr_logic(paused_before, target_peak)
+    query_hdr_state()
+    if hdr_active and o.hdr_mode ~= "noth" then
+        apply_hdr_settings()
+        resume_if_needed(paused_before)
+    elseif not hdr_active and o.hdr_mode ~= "noth" and tonumber(target_peak) ~= 203 then
+        apply_sdr_settings()
+    end
+end
+
+local function handle_sdr_logic(paused_before, target_peak)
+    query_hdr_state()
+    if not hdr_active or o.hdr_mode ~= "noth" then
+        if tonumber(target_peak) ~= 203 and (not hdr_active or not state.inverse_mapping) then
+            apply_sdr_settings()
+        elseif hdr_active and state.inverse_mapping then
+            reset_target_settings()
+        end
+        resume_if_needed(paused_before)
+    end
+    if hdr_active and o.hdr_mode == "pass" and state.inverse_mapping then
+        reset_target_settings()
+    end
+end
+
 local function should_switch_hdr(hdr_active, is_fullscreen)
     if o.hdr_mode ~= "switch" then return false end
     if not hdr_active and (not o.fullscreen_only or is_fullscreen) then
@@ -116,71 +126,61 @@ local function should_switch_hdr(hdr_active, is_fullscreen)
 end
 
 local function switch_hdr()
+    query_hdr_state()
     local params = mp.get_property_native("video-params")
     local gamma = params and params["gamma"]
     local max_luma = params and params["max-luma"]
     local is_hdr = max_luma and max_luma > 203
     if not gamma then return end
-    local current_state = is_hdr and "hdr" or "sdr"
 
+    local current_state = is_hdr and "hdr" or "sdr"
     local pause_changed = false
-    local paused = mp.get_property_native("pause")
     local fullscreen = mp.get_property_native("fullscreen")
     local maximized = mp.get_property_native("window-maximized")
     local target_peak = mp.get_property_native("target-peak")
     local is_fullscreen = fullscreen or maximized
+
     if current_state == "hdr" then
+        local function continue_hdr()
+            handle_hdr_logic(pause_changed, target_peak)
+        end
+
         if first_switch_check and o.fullscreen_only and not is_fullscreen then
             first_switch_check = false
         elseif should_switch_hdr(hdr_active, is_fullscreen) then
-            if not paused then
-                mp.set_property_native("pause", true)
-                pause_changed = true
+            pause_changed = pause_if_needed()
+            if hdr_active and o.fullscreen_only and not is_fullscreen then
+                msg.info("Switching to SDR output...")
+                switch_display_mode(false)
+            else
+                msg.info("Switching to HDR output...")
+                switch_display_mode(true)
             end
-            msg.info("Switching to HDR output...")
-            switch_display_mode(true)
+            mp.add_timeout(3, continue_hdr)
+            return
         end
-        if hdr_active and o.hdr_mode ~= "noth" then
-            if not paused and pause_changed then
-                mp.add_timeout(3.5, function()
-                    mp.set_property_native("pause", false)
-                end)
-            end
-            apply_hdr_settings()
-        end
-        if not hdr_active and o.hdr_mode ~= "noth" and tonumber(target_peak) ~= 203 then
-            apply_sdr_settings()
-        end
+
+        handle_hdr_logic(false, target_peak)
+
     elseif current_state == "sdr" then
+        local function continue_sdr()
+            handle_sdr_logic(pause_changed, target_peak)
+        end
+
         if hdr_active and o.hdr_mode == "switch" and (not o.fullscreen_only or is_fullscreen) then
-            if not paused then
-                mp.set_property_native("pause", true)
-                pause_changed = true
-            end
             msg.info("Switching back to SDR output...")
+            pause_changed = pause_if_needed()
             switch_display_mode(false)
+            mp.add_timeout(3, continue_sdr)
+            return
         end
-        if (not hdr_active or o.hdr_mode ~= "noth") and hdr_invalid == false
-        and last_luma_state == "hdr" then
-            if not paused and pause_changed then
-                mp.add_timeout(3.5, function()
-                    mp.set_property_native("pause", false)
-                end)
-            end
-            if not hdr_active or (not state.inverse_mapping and tonumber(target_peak) ~= 203) then
-                apply_sdr_settings()
-            elseif hdr_active and state.inverse_mapping then
-                reset_target_settings()
-            end
-        end
-        if hdr_active and o.hdr_mode == "pass" and state.inverse_mapping then
-            reset_target_settings()
-        end
+
+        handle_sdr_logic(false, target_peak)
     end
-    last_luma_state = current_state
 end
 
 local function check_paramet()
+    query_hdr_state()
     local target_peak = mp.get_property_native("target-peak")
     local target_contrast = mp.get_property_native("target-contrast")
     local colorspace_hint = mp.get_property_native("target-colorspace-hint")
@@ -189,10 +189,9 @@ local function check_paramet()
     local gamma = params and params["gamma"]
     local max_luma = params and params["max-luma"]
     local is_hdr = max_luma and max_luma > 203
-    if not gamma or not is_hdr then return end
+    if not gamma then return end
 
-    query_hdr_state()
-    if hdr_active and o.hdr_mode ~= "noth" and is_hdr then
+    if is_hdr and hdr_active and o.hdr_mode ~= "noth" then
         if target_peak ~= o.target_peak then
             mp.set_property_native("target-peak", o.target_peak)
         end
@@ -206,8 +205,8 @@ local function check_paramet()
             mp.set_property_native("inverse-tone-mapping", "no")
         end
     end
-    if not hdr_active and o.hdr_mode ~= "noth"
-    and target_peak ~= "auto" and tonumber(target_peak) ~= 203 then
+    if not is_hdr and o.hdr_mode ~= "noth" and not state.inverse_mapping
+    and tonumber(target_peak) ~= 203 then
         apply_sdr_settings()
     end
 end
@@ -226,35 +225,33 @@ local function on_start()
     mp.observe_property("target-peak", "native", check_paramet)
     mp.observe_property("target-contrast", "native", check_paramet)
     mp.observe_property("target-colorspace-hint", "native", check_paramet)
+    mp.observe_property("user-data/display-info/hdr-status", "native", switch_hdr)
     if o.fullscreen_only then
         mp.observe_property("fullscreen", "native", switch_hdr)
         mp.observe_property("window-maximized", "native", switch_hdr)
     end
 end
 
-local function on_end()
+local function on_end(event)
+    query_hdr_state()
     first_switch_check = true
     mp.unobserve_property(switch_hdr)
     mp.unobserve_property(check_paramet)
-end
-
-local function on_idle(_, active)
-    query_hdr_state()
-    local target_peak = mp.get_property_native("target-peak")
-    if active and hdr_active and o.hdr_mode ~= "noth" and tonumber(target_peak) ~= 203 then
-        apply_sdr_settings()
-        last_luma_state = nil
+    if event["reason"] == "quit" then
+        if hdr_active and o.hdr_mode == "switch" then
+            msg.info("Restoring display to SDR on shutdown")
+            switch_display_mode(false)
+        end
     end
 end
 
-local function on_shutdown()
-    if hdr_active and o.hdr_mode == "switch" then
-        msg.info("Restoring display to SDR on shutdown")
-        switch_display_mode(false)
+local function on_idle(_, active)
+    local target_peak = mp.get_property_native("target-peak")
+    if active and o.hdr_mode ~= "noth" and tonumber(target_peak) ~= 203 then
+        apply_sdr_settings()
     end
 end
 
 mp.register_event("start-file", on_start)
 mp.register_event("end-file", on_end)
 mp.observe_property("idle-active", "native", on_idle)
-mp.register_event("shutdown", on_shutdown)

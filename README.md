@@ -138,7 +138,7 @@ Automatically switches the display's SDR and HDR modes for HDR passthrough based
 
 Only works on Windows 10 and later systems
 
-Requires that [HDRCmd](https://github.com/res2k/HDRTray).
+Requires for use with [mpv-display-plugin](https://github.com/dyphire/mpv-display-plugin).
 
 ## history-bookmark.lua
 
