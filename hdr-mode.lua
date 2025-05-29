@@ -38,6 +38,8 @@ local first_switch_check = true
 
 local state = {
     target_peak = mp.get_property_native("target-peak"),
+    target_prim = mp.get_property_native("target-prim"),
+    target_trc = mp.get_property_native("target-trc"),
     target_contrast = mp.get_property_native("target_contrast"),
     colorspace_hint = mp.get_property_native("target-colorspace-hint"),
     inverse_mapping = mp.get_property_native("inverse-tone-mapping")
@@ -55,6 +57,8 @@ local function switch_display_mode(enable)
 end
 
 local function apply_hdr_settings()
+    mp.set_property_native("target-prim", "bt.2020")
+    mp.set_property_native("target-trc", "pq")
     mp.set_property_native("target-peak", o.target_peak)
     mp.set_property_native("target-contrast", o.target_contrast)
     mp.set_property_native("target-colorspace-hint", "yes")
@@ -63,11 +67,24 @@ end
 
 local function apply_sdr_settings()
     mp.set_property_native("target-peak", "203")
+    mp.set_property_native("target-contrast", state.target_contrast)
     mp.set_property_native("target-colorspace-hint", "no")
+    if state.target_prim ~= "bt.2020" then
+        mp.set_property_native("target-prim", state.target_prim)
+    else
+        mp.set_property_native("target-prim", "auto")
+    end
+    if state.target_trc ~= "pq" then
+        mp.set_property_native("target-trc", state.target_trc)
+    else
+        mp.set_property_native("target-trc", "auto")
+    end
 end
 
 local function reset_target_settings()
     mp.set_property_native("target-peak", state.target_peak)
+    mp.set_property_native("target-prim", state.target_prim)
+    mp.set_property_native("target-trc", state.target_trc)
     mp.set_property_native("target-contrast", state.target_contrast)
     mp.set_property_native("target-colorspace-hint", state.colorspace_hint)
     mp.set_property_native("inverse-tone-mapping", state.inverse_mapping)
@@ -182,6 +199,8 @@ end
 local function check_paramet()
     query_hdr_state()
     local target_peak = mp.get_property_native("target-peak")
+    local target_prim = mp.get_property_native("target-prim")
+    local target_trc = mp.get_property_native("target-trc")
     local target_contrast = mp.get_property_native("target-contrast")
     local colorspace_hint = mp.get_property_native("target-colorspace-hint")
     local inverse_mapping = mp.get_property_native("inverse-tone-mapping")
@@ -198,6 +217,12 @@ local function check_paramet()
         if target_contrast ~= o.target_contrast then
             mp.set_property_native("target-contrast", o.target_contrast)
         end
+        if target_prim ~= "bt.2020" then
+            mp.set_property_native("target-prim", "bt.2020")
+        end
+        if target_trc ~= "pq" then
+            mp.set_property_native("target-trc", "pq")
+        end
         if colorspace_hint ~= "yes" then
             mp.set_property_native("target-colorspace-hint", "yes")
         end
@@ -206,7 +231,7 @@ local function check_paramet()
         end
     end
     if not is_hdr and o.hdr_mode ~= "noth" and not state.inverse_mapping
-    and tonumber(target_peak) ~= 203 then
+    and (tonumber(target_peak) ~= 203 or target_prim == "bt.2020" or target_trc == "pq") then
         apply_sdr_settings()
     end
 end
@@ -223,6 +248,8 @@ local function on_start()
     query_hdr_state()
     mp.observe_property("video-params", "native", switch_hdr)
     mp.observe_property("target-peak", "native", check_paramet)
+    mp.observe_property("target-prim", "native", check_paramet)
+    mp.observe_property("target-trc", "native", check_paramet)
     mp.observe_property("target-contrast", "native", check_paramet)
     mp.observe_property("target-colorspace-hint", "native", check_paramet)
     mp.observe_property("user-data/display-info/hdr-status", "native", switch_hdr)
