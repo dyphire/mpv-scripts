@@ -107,8 +107,9 @@ key script-message-to chapter_make_read write_chapter ogm
 ```
 
 - if you want to have the ability to name/rename chapters, the minimum requirement for the mpv version is 0.38.0, or choose to install the [mpv-user-input](https://github.com/CogentRedTester/mpv-user-input)
-- Some recommendations
 
+- Some recommendations
+  
   - another chapters script: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
   - chapter format conversion tool：https://github.com/fireattack/chapter_converter
 
@@ -131,6 +132,12 @@ Interractive edition-list menu on OSD. Requires that [scroll-list.lua](https://g
 - Prints a message on the OSD if editions are found in the file, and temporarily switches the osd-playback-message to the editions-list property when switching. This makes it easier to tell the number and names while navigating editions.
 
 Modified from [CogentRedTester/mpv-scripts/editions-notification.lua](https://github.com/CogentRedTester/mpv-scripts/blob/master/editions-notification.lua)
+
+## fix-avsync.lua
+
+Fixed A/V sync when switching the audio output device with using audio filters.
+
+Ref: [Switching the audio output device when using audio filters will result in continuous audio loss](https://github.com/mpv-player/mpv/issues/16559)
 
 ## hdr-mode.lua
 
