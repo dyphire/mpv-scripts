@@ -113,11 +113,13 @@ key script-message-to chapter_make_read write_chapter ogm
   - another chapters script: [mar04/chapters_for_mpv](https://github.com/mar04/chapters_for_mpv)
   - chapter format conversion tool：https://github.com/fireattack/chapter_converter
 
-## [chapterskip.lua](https://github.com/dyphire/chapterskip/blob/dev/chapterskip.lua)
+## chapterskip.lua
 
 Automatically skips chapters based on title.
+Also can skips to the next silence in the file. The intended use for this is to skip until the end of an opening or ending sequence, at which point there's often a short period of silence.
 
-Modified from [po5/chapterskip](https://github.com/po5/chapterskip)
+Modified from [po5/chapterskip](https://github.com/po5/chapterskip), [detuur-mpv-scripts/skiptosilence.lua](https://github.com/Eisa01/detuur-mpv-scripts/blob/master/skiptosilence.lua)
+
 
 ## drcbox.lua
 
@@ -194,12 +196,6 @@ Modified from [jonniek/mpv-playlistmanager](https://github.com/jonniek/mpv-playl
 Logs played files to a history log file with an interactive 'recently played' menu that reads from the log. Allows for automatic or manual logging if you want a file bookmark menu instead.
 
 Modified from [hacel/recent](https://github.com/hacel/recent)
-
-## skiptosilence.lua
-
-This script skips to the next silence in the file. The intended use for this is to skip until the end of an opening or ending sequence, at which point there's often a short period of silence.
-
-Modified from [detuur-mpv-scripts/skiptosilence.lua](https://github.com/Eisa01/detuur-mpv-scripts/blob/master/skiptosilence.lua)
 
 ## slicing_copy.lua
 
