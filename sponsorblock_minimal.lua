@@ -93,7 +93,6 @@ end
 
 local function file_loaded()
     cache = {}
-    video_id = nil
     local video_path = mp.get_property("path", "")
     local video_referer = mp.get_property("http-header-fields", ""):match("[Rr]eferer:%s*([^,\r\n]+)") or ""
     local purl = mp.get_property("metadata/by-key/PURL", "")
@@ -140,6 +139,7 @@ end
 local function end_file()
     if not ON then return end
     mp.unobserve_property(skip_ads)
+    video_id = nil
     cache = nil
     ranges = nil
     ON = false
