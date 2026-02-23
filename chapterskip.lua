@@ -1,5 +1,5 @@
 --[[
-  * chapterskip.lua v.2026-02-20
+  * chapterskip.lua v.2026-02-23
   *
   * AUTHORS: detuur, microraptor, Eisa01, dyphire
   * License: MIT
@@ -389,11 +389,16 @@ render_button = function()
     local scale = screen_height / 1080    local button_padding_x = o.button_padding_x * scale
     local button_padding_y = o.button_padding_y * scale
     local font_size = o.button_font_size * scale
+    local hint_font_size = font_size * 0.9  -- Smaller font for hint
 
-    -- Calculate button dimensions
+    -- Calculate button dimensions with hint text
     local message_width = #button_state.message * font_size * 0.6
-    local button_width = message_width + button_padding_x * 2
-    local button_height = font_size + button_padding_y * 2
+    local hint_text = "[y/n]"
+    local hint_width = #hint_text * hint_font_size * 0.6
+    local max_text_width = math.max(message_width, hint_width)
+    local button_width = max_text_width + button_padding_x * 2
+    local line_spacing = font_size * 0.1
+    local button_height = font_size + line_spacing + hint_font_size + button_padding_y * 2
 
     -- Position button: bottom right, same as notify_skip
     local margin = o.button_margin * scale
@@ -473,13 +478,20 @@ render_button = function()
         ass:draw_stop()
     end
 
-    -- Draw text
+    -- Draw text (main message)
     local text_x = button_x + button_width / 2
-    local text_y = button_y + button_height / 2
+    local text_y = button_y + button_height / 2 - (hint_font_size + line_spacing) / 2
     ass:new_event()
     ass:append("{\\an5\\fs" .. font_size .. "\\b1\\bord0\\shad0\\1c&H" .. text_color .. "&}")
     ass:pos(text_x, text_y)
     ass:append(button_state.message)
+
+    -- Draw keyboard hint (second line)
+    local hint_y = text_y + font_size / 2 + line_spacing + hint_font_size / 2
+    ass:new_event()
+    ass:append("{\\an5\\fs" .. hint_font_size .. "\\b0\\bord0\\shad0\\1c&H" .. text_color .. "&\\alpha&H80&}")
+    ass:pos(text_x, hint_y)
+    ass:append(hint_text)
 
     local ass_text = ass.text
 
@@ -539,11 +551,14 @@ hide_button = function()
     end
 
     unbind_button_click()
+
+    -- Remove keyboard shortcuts
+    mp.remove_key_binding("chapterskip-confirm")
+    mp.remove_key_binding("chapterskip-cancel")
 end
 
 -- Show button with countdown
 local function show_button(message, action, skip_obj)
-    msg.info("show_button: message=" .. message .. ", timeout=" .. o.timeout)
     hide_button()  -- Clear any existing button
 
     button_state.visible = true
@@ -556,6 +571,21 @@ local function show_button(message, action, skip_obj)
     render_button()
 
     bind_button_click()
+
+    -- Add keyboard shortcuts for confirm/cancel
+    mp.add_forced_key_binding("y", "chapterskip-confirm", function()
+        if button_state.action then
+            button_state.action()
+        end
+        hide_button()
+    end)
+
+    mp.add_forced_key_binding("n", "chapterskip-cancel", function()
+        if button_state.skip_obj then
+            button_state.skip_obj.cancelled = true
+        end
+        hide_button()
+    end)
 
     if o.timeout > 0 then
         button_state.countdown_timer = mp.add_periodic_timer(1, function()
@@ -859,7 +889,7 @@ local function check_skip()
 
     -- Check if it's the same file or a different file in the same directory
     local is_same_file = (fname == filename)
-    
+
     if (not is_protocol(path) and file_ext ~= fname_ext) or
     (fname ~= filename and not compare_filenames(fname, filename)) then
         return
@@ -873,7 +903,7 @@ local function check_skip()
         if not o.enable_history_position_inference and not is_same_file then
             return  -- Skip history for non-chapter files when disabled and not the same file
         end
-        
+
         -- Apply history with category inference (if enabled or same file)
         for _, s in ipairs(skip_list) do
             local category = nil
