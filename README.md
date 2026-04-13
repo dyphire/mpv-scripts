@@ -120,7 +120,6 @@ Also can skips to the next silence in the file. The intended use for this is to 
 
 Modified from [po5/chapterskip](https://github.com/po5/chapterskip), [detuur-mpv-scripts/skiptosilence.lua](https://github.com/Eisa01/detuur-mpv-scripts/blob/master/skiptosilence.lua)
 
-
 ## drcbox.lua
 
 Dynamic Audio Normalizer filter with visual feedback.
@@ -185,6 +184,12 @@ Load folder/files/iso/clipboard (support url)/other subtitles/other audio tracks
 
 Inspiration from [rossy/mpv-open-file-dialog](https://github.com/rossy/mpv-open-file-dialog), [tsl0922/dialog.lua](https://github.com/tsl0922/mpv-menu-plugin/blob/main/lua/dialog.lua)
 
+## pip.lua
+
+This script adds Picture-in-Picture functionality to MPV media player, allowing you to watch videos in a small floating window while working with other applications.
+
+Modified from [WatanabeChika/mpv-PiP](https://github.com/WatanabeChika/mpv-PiP) , [ModernZ/pip-lite](https://github.com/Samillion/ModernZ/tree/main/extras/pip-lite)
+
 ## [playlistmanager.lua](https://github.com/dyphire/mpv-playlistmanager)
 
 Mpv lua script to create and manage playlists
@@ -244,3 +249,5 @@ Modified from [LiTO773/trakt-mpv](https://github.com/LiTO773/trakt-mpv)
 Feature-rich minimalist proximity-based UI for [MPV player](https://mpv.io/).
 
 Modified from [tomasklaen/uosc](https://github.com/tomasklaen/uosc)
+
+
