@@ -5,6 +5,11 @@
 
 local msg = require "mp.msg"
 
+local function is_protocol(path)
+    return type(path) == 'string' and (path:find('^%a[%w.+-]-://') ~= nil or path:find('^%a[%w.+-]-:%?') ~= nil)
+end
+
+
 local function fix_avsync()
     local paused = mp.get_property_bool("pause")
     msg.info("fix A/V sync.")
@@ -19,7 +24,9 @@ end
 mp.observe_property("current-ao", "native", function(_, device)
     local aid = mp.get_property_number("aid")
     local has_af = mp.get_property("af", "") ~= ""
-    if device and aid and has_af then
+    local path = mp.get_property("path")
+    local time = mp.get_property_native("time-pos")
+    if device and aid and has_af and time > 0 and not is_protocol(path) then
         fix_avsync()
     end
 end)
